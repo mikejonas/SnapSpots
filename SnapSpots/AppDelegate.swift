@@ -7,15 +7,37 @@
 //
 
 import UIKit
+import GoogleMaps
+import Firebase
+import Alamofire
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var coreLocationController:CoreLocationController?
+    var imageFileController:ImageFileController?
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        self.coreLocationController = CoreLocationController()
+        self.imageFileController = ImageFileController()
+        
+        // GOOGLE MAPS SDK
+        GMSServices.provideAPIKey("AIzaSyB-0-hv2zKDeYl17vRTaDOPKhuQiZnsXmo")
+        
+        //FIREBASE
+        Firebase.defaultConfig().persistenceEnabled = true
+        
+        ImageUtil.downloadImage()
+        
+//        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: false)
+        
+        var initialViewController:UIViewController
+        initialViewController = pageController
+        self.window?.rootViewController = initialViewController
+        self.window?.makeKeyAndVisible()
+        
         return true
     }
 
@@ -40,7 +62,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
+    
 }
 
