@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import AmazonS3RequestManager
-import Alamofire
 
 class ImageUtil {
     class func cropVerticalImageToSquare(image:UIImage) -> UIImage {
@@ -34,48 +32,5 @@ class ImageUtil {
         resizedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return resizedImage
-    }
-    
-    class func downloadImage() {
-        let amazonS3Manager = AmazonS3RequestManager(bucket: "snapspots", region: .USWest1, accessKey: "AKIAJY3DSCPSXTXFV6MQ", secret: "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")
-
-        // We need just to get the documents folder url
-
-        let dir: NSURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
-        
-        amazonS3Manager.getObject("images/test.jpg").responseS3Data { (response) -> Void in
-            
-            if response.result.isSuccess {
-                print("SUCCESS")
-            } else {
-                print(response.result.error)
-            }
-//            let path = NSURL(fileURLWithPath: String(dir)).URLByAppendingPathComponent("asdf.jpg")
-//            if let data = response.data {
-//                let result = data.writeToURL(path, atomically: true)
-//                print("image Saved?: \(result)")
-//            } else {
-//                print(response.result.error)
-//            }
-        }
-
-        do {
-            let directoryContents = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(dir, includingPropertiesForKeys: nil, options: NSDirectoryEnumerationOptions())
-            print(directoryContents)
-            
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        }
-    }
-    
-    func saveImageData(data:NSData, fileName:String){
-        if let dirs:[String] = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true) as [String] {
-            let dir = dirs[0] //documents directory
-                let path = NSURL(fileURLWithPath: dir).URLByAppendingPathComponent(fileName)
-                let result = data.writeToURL(path, atomically: true)
-                print("image Saved?: \(result)")
-
-        }
-        
     }
 }

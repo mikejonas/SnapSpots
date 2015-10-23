@@ -17,6 +17,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var coreLocationController:CoreLocationController?
     var imageFileController:ImageFileController?
+    
+    override init() {
+        super.init()
+        
+        // https://www.firebase.com/blog/2015-10-15-best-practices-uiviewcontroller-ios-firebase.html
+        Firebase.defaultConfig().persistenceEnabled = true
+    }
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -26,12 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // GOOGLE MAPS SDK
         GMSServices.provideAPIKey("AIzaSyB-0-hv2zKDeYl17vRTaDOPKhuQiZnsXmo")
         
-        //FIREBASE
-        Firebase.defaultConfig().persistenceEnabled = true
-        
-        ImageUtil.downloadImage()
-        
-//        UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: false)
+        // UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: false)
         
         var initialViewController:UIViewController
         initialViewController = pageController

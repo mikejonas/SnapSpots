@@ -26,6 +26,8 @@ class ListSpotsCollectionViewController: UICollectionViewController {
         collectionView?.backgroundColor = UIColor.whiteColor()
         
         // Get a reference to our posts
+        // HERE'S A BETTER WAY TO LAY THIS OUT:
+        // https://www.firebase.com/blog/2015-10-15-best-practices-uiviewcontroller-ios-firebase.html
         let ref = Firebase(url:"https://snapspot.firebaseio.com/spots")
         
         // Attach a closure to read the data at our posts reference
