@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import GoogleMaps
+//import GoogleMaps
 import Firebase
 import Alamofire
 
@@ -39,6 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         initialViewController = pageController
         self.window?.rootViewController = initialViewController
         self.window?.makeKeyAndVisible()
+        
         
         return true
     }

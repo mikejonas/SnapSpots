@@ -74,7 +74,6 @@ class ListSpotsViewController: UIViewController {
 
     
     override func viewDidAppear(animated: Bool) {
-        print("LIST SPOTS VIEW CONTROLLER APPEARED!")
 //        listSpotsCollectionVC.collectionViewTestReloadData()
         
         let hashtagString = (Globals.variables.filterSpotsHashtag).joinWithSeparator(". #")

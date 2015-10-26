@@ -1,16 +1,19 @@
 PODS:
   - Alamofire (3.0.0)
-  - AmazonS3RequestManager (0.9.0):
-    - Alamofire (= 3.0.0)
+  - AlamofireImage (2.0.0):
+    - Alamofire (~> 3.0)
+  - AmazonS3RequestManager (0.9.1):
+    - Alamofire (~> 3.0)
     - SWXMLHash (~> 2.0)
   - Firebase (2.4.2)
   - FontAwesome.swift (0.6.2)
   - GoogleMaps (1.10.4)
   - SwiftyJSON (2.3.0)
-  - SWXMLHash (2.0.1)
+  - SWXMLHash (2.0.2)
 
 DEPENDENCIES:
   - Alamofire (= 3.0.0)
+  - AlamofireImage (~> 2.0)
   - AmazonS3RequestManager (~> 0.9)
   - Firebase
   - FontAwesome.swift
@@ -28,11 +31,12 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: b61782387f81bcc538a0284cf2bb5d7995cd0a80
-  AmazonS3RequestManager: 1cc2f0f8678f17c5ccda96e18e37297167bc265f
+  AlamofireImage: 5cecda9b1031f86067c89ddba1d91ead0a8c3f0e
+  AmazonS3RequestManager: c17ed840dfee8412c22f501516769a2010e39ac6
   Firebase: 5e898ed5012c81d28ca5fae1113c6b61a172bc6d
   FontAwesome.swift: d40ac0a660f079c77945bab632ca20bf46ddc1ac
   GoogleMaps: 134bcf57e8d489efbc0c29d532ed421554fabdb2
   SwiftyJSON: cacfe0373d584585716bd1d43202c24cc66afd65
-  SWXMLHash: 2211e0593047ef0aacfcad2fb40c1978f2f0f2e2
+  SWXMLHash: 9e6bd7db2e8275eaf3d2082265623d6e749e169d
 
 COCOAPODS: 0.39.0

@@ -66,6 +66,7 @@ func convertFirebaseObjectToSpotComponents(spotObject:FDataSnapshot) -> SpotComp
         date: convertTimeStampToNSDate(json["date"].double),
         isSynced: nil
     )
+    imageFileController?.appendToImageDownloadQueue(spotComponents.localImagePaths)
     
     return spotComponents
 }
@@ -83,7 +84,7 @@ func saveNewSpot(components: SpotComponents) {
     newSpot["hashTags"] = components.hashTags
     newSpot["localImagePaths"] = components.localImagePaths
     
-    imageFileController?.saveImagesLocally(components.images, imagePaths: newSpot["localImagePaths"] as! [String])
+    imageFileController?.saveImagesToApp(components.images, imagePaths: newSpot["localImagePaths"] as! [String])
     newSpot["date"] = components.date?.timeIntervalSince1970
     if let coordinates = components.addressComponents.coordinates {
         newSpotLocation["coordinates"] = ["lat" : coordinates.latitude, "lng" : coordinates.longitude]
@@ -105,6 +106,8 @@ func saveNewSpot(components: SpotComponents) {
     }
     newSpot["location"] = newSpotLocation
     let newSpotRef = spotsRef.childByAutoId()
+    print("KEY: \(newSpotRef.key)")
+
     newSpotRef.setValue(newSpot)
 }
 
@@ -113,7 +116,13 @@ func updateSpot(newComponents: SpotComponents, oldComponents: SpotComponents) {
     let ref = Firebase(url: "https://snapspot.firebaseio.com")
     let spotsRef = ref.childByAppendingPath("spots")
     let spotRef = spotsRef.childByAppendingPath(newComponents.key)
-    print(spotRef)
+    var newImages:[String] = []
+    for imagePath in newComponents.localImagePaths {
+        if oldComponents.localImagePaths.contains(imagePath) {
+            newImages.append(imagePath)
+        }
+        
+    }
     spotRef.updateChildValues([
         "caption":newComponents.caption!,
         "hashTags":newComponents.hashTags!,
@@ -152,8 +161,7 @@ func deleteSpot(components: SpotComponents) {
     let spotRef = spotsRef.childByAppendingPath(components.key)
     spotRef.removeValueWithCompletionBlock { (error, object) -> Void in
         if error == nil {
-            print(imageFileController?.deleteImagesLocally(components.localImagePaths))
-            
+            print(imageFileController?.deleteImagesFromApp(components.localImagePaths))
         } else {
             print(error)
         }

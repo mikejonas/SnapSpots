@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import GoogleMaps
 
 public struct LocationBias {
     public let latitude: Double

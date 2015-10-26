@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import AlamofireImage
 
 class ListSpotsCollectionViewController: UICollectionViewController {
 
@@ -19,6 +20,7 @@ class ListSpotsCollectionViewController: UICollectionViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
+        self.collectionView!.reloadData()
     }
     
     override func viewDidLoad() {
@@ -33,7 +35,6 @@ class ListSpotsCollectionViewController: UICollectionViewController {
         // Attach a closure to read the data at our posts reference
         ref.observeEventType(.ChildAdded, withBlock: { snapshot in
                 self.spots.append(convertFirebaseObjectToSpotComponents(snapshot))
-                print("CHILD ADDED!")
                 self.collectionView!.reloadData()
         })
         ref.observeEventType(.ChildChanged, withBlock: { snapshot in
@@ -138,11 +139,21 @@ class ListSpotsCollectionViewController: UICollectionViewController {
         }
         
         let imageFileNames = spots[indexPath.row].localImagePaths
-        let imageArray = retrieveImagesLocally(imageFileNames)
-        if imageArray.count > 0 {
-            cell.imageThumbnail.image = imageArray[0]
+//        let imageArray = retrieveImagesLocally(imageFileNames)
+        if imageFileNames.count > 0 {
+            
+//            cell.imageThumbnail.image = imageArray[0]
+//            print("imageArray[0] = \(imageArray[0])")
+            
+            let URL = NSURL(string: "https://s3-us-west-1.amazonaws.com/snapspots/images/\(imageFileNames[0])")!
+            let placeholderImage = UIImage(named: "Barcelona")!
+            
+            cell.imageThumbnail.af_setImageWithURL(URL, placeholderImage: placeholderImage)
+            
+            
         } else {
-            print(":(")
+            //No Images found?
+            cell.imageThumbnail.image = nil
         }
         
         

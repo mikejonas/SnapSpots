@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import GoogleMaps
+//import GoogleMaps
 import CoreLocation
 import FontAwesome_swift
 

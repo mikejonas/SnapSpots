@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import GoogleMaps
+//import GoogleMaps
 import FontAwesome_swift
 
 class ViewSpotViewController: UIViewController {
