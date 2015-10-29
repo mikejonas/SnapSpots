@@ -9,11 +9,6 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>AlamofireImage.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
 		<key>AmazonS3RequestManager.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -30,6 +25,11 @@
 			<false/>
 		</dict>
 		<key>FontAwesome.swift.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Kingfisher.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -57,12 +57,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>3A1B68CD5688426BC73CAC85C12779B0</key>
+		<key>432ECC54282C84882B482CCB4CF227FC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>432ECC54282C84882B482CCB4CF227FC</key>
+		<key>65788B3CF70E63783EE27625ED9F0552</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -77,22 +77,22 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>75CF623187341A02722DAEC56E086CD9</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>A1BF58736B6CCECB5DB30E2108366143</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>B65AC5C2CDD2C0633574975053AEC84B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>B7AC9326D819482593FE118E915409D7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C3325B37172B2C5DE131F80BB7C07B79</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F91226101ECE8FCFD221A3EC54481F82</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -46,6 +46,7 @@ class EditSpotViewController: UIViewController {
 
     let locationUtil = LocationUtil()
     var spotComponents = SpotComponents()
+    var oldSpotComponents = SpotComponents()
     var marker = GMSMarker()
     var getLocationTimer:NSTimer?
     var getLocationTimerCycles = 0
@@ -230,11 +231,10 @@ class EditSpotViewController: UIViewController {
             self.spotComponents = spotComponents
 
             for i in 0..<spotComponents.images.count {
-                if let path = spotComponents.images[i].path {
-                    self.spotComponents.images[i].image = retrieveImageLocally(path)
-                }
-                self.reloadImages()
-                
+                retrieveImageLocally(spotComponents.images[i], completion: { (imageComponents) -> () in
+                    self.spotComponents.images[i].image = imageComponents.image
+                    self.reloadImages()
+                })
             }
 
             
@@ -255,6 +255,7 @@ class EditSpotViewController: UIViewController {
         captionPlaceholderLabel.hidden = false
         captionTextView.text = nil
         spotComponents = SpotComponents()
+        oldSpotComponents = SpotComponents()
         updateMap(nil)
         scrollView.setContentOffset(CGPointMake(0, 0), animated: false)
     }
@@ -270,7 +271,7 @@ extension EditSpotViewController: AddImageCameraViewControllerDelegate {
     }
     func ImageAdded(image: UIImage) {
         self.dismissViewControllerAnimated(true, completion: nil)
-        addImage(ImageTransformationUtil.scaleImageTo(newWidth: 1080, image: image))
+        addImage(ImageUtil.scaleImageTo(newWidth: 1080, image: image))
         
     }
 }
@@ -325,23 +326,22 @@ extension EditSpotViewController {
 
     func reloadImageButtons() {
         
-        let imageCount = spotComponents.images.count
-        print(imageCount)
-        for (i, imageView) in imageViewArray.enumerate() {
-            if let imageButton = imageView.subviews[0] as? UIButton {
-                if i < imageCount {
-                    imageButton.setTitle(String.fontAwesomeIconWithName(.Times), forState: .Normal)
-                    imageButton.setTitleColor(UIColor(red: 254/255, green: 152/255, blue: 152/255, alpha: 1.0), forState: .Normal)
-                    imageButton.layer.opacity = 1
-                    imageButton.layer.shadowColor = UIColor.blackColor().CGColor
-                } else {
-                    imageButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
-                    imageButton.setTitle(String.fontAwesomeIconWithName(.Plus), forState: .Normal)
-                    imageButton.layer.opacity = 0.3
-                    imageButton.layer.shadowColor = UIColor.clearColor().CGColor
-                }
-            }
+        for i in 0 ..< imageViewArray.count {
             
+        }
+        
+        if let imageButton = imageViewArray[index].subviews[0] as? UIButton {
+            if hasImage {
+                imageButton.setTitle(String.fontAwesomeIconWithName(.Times), forState: .Normal)
+                imageButton.setTitleColor(UIColor(red: 254/255, green: 152/255, blue: 152/255, alpha: 1.0), forState: .Normal)
+                imageButton.layer.opacity = 1
+                imageButton.layer.shadowColor = UIColor.blackColor().CGColor
+            } else {
+                imageButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+                imageButton.setTitle(String.fontAwesomeIconWithName(.Plus), forState: .Normal)
+                imageButton.layer.opacity = 0.3
+                imageButton.layer.shadowColor = UIColor.clearColor().CGColor
+            }
         }
     }
     

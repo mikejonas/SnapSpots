@@ -165,7 +165,7 @@ for (key,subJson):(String, JSON) in json {
 ```swift
 //If json is .Array
 //The `index` is 0..<json.count's string value
-for (key,subJson):(String, JSON) in json {
+for (index,subJson):(String, JSON) in json {
     //Do something you want
 }
 ```
@@ -300,13 +300,13 @@ if let data = json.rawData() {
 if let string = json.rawString() {
     //Do something you want
 }
-
+```
 ####Existance
 ```swift
 //shows you whether value specified in JSON or not
 if json["name"].isExists()
 ```
-```
+
 ####Literal convertibles
 For more info about literal convertibles: [Swift Literal Convertibles](http://nshipster.com/swift-literal-convertible/)
 ```swift

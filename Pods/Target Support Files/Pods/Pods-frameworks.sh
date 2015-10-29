@@ -85,19 +85,19 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/Alamofire.framework"
-  install_framework "Pods/AlamofireImage.framework"
   install_framework "Pods/AmazonS3RequestManager.framework"
   install_framework "Pods/Firebase.framework"
   install_framework "Pods/FontAwesome_swift.framework"
+  install_framework "Pods/Kingfisher.framework"
   install_framework "Pods/SWXMLHash.framework"
   install_framework "Pods/SwiftyJSON.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/Alamofire.framework"
-  install_framework "Pods/AlamofireImage.framework"
   install_framework "Pods/AmazonS3RequestManager.framework"
   install_framework "Pods/Firebase.framework"
   install_framework "Pods/FontAwesome_swift.framework"
+  install_framework "Pods/Kingfisher.framework"
   install_framework "Pods/SWXMLHash.framework"
   install_framework "Pods/SwiftyJSON.framework"
 fi

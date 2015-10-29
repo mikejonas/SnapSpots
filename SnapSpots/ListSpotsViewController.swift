@@ -7,23 +7,51 @@
 //
 
 import UIKit
+import Firebase
+
+var spots:[SpotComponents] = []
 
 class ListSpotsViewController: UIViewController {
+
+    var ref: Firebase!
+    
     var pageMenu : CAPSPageMenu?
     let listSpotsCollectionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ListSpotsCollectionViewController") as! ListSpotsCollectionViewController
     let ListSpotsTableVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ListSpotsTableViewController") as! ListSpotsTableViewController
     let ListSpotsMapVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ListSpotsMapViewController") as! ListSpotsMapViewController
     
     var buttonImage = UIImage(named: "Nav Hashtag")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-//    var rightButton = UIButton()
+
     
     override func viewWillAppear(animated: Bool) {
-
+        super.viewWillAppear(animated)
+            
+        // Attach a closure to read the data at our posts reference
+        ref.observeEventType(.ChildAdded, withBlock: { snapshot in
+            spots.insert(convertFirebaseObjectToSpotComponents(snapshot), atIndex: 0)
+            self.listSpotsCollectionVC.collectionView!.reloadData()
+        })
+        ref.observeEventType(.ChildChanged, withBlock: { snapshot in
+            if let i = spots.indexOf({$0.key == snapshot.key}) {
+                spots[i] = convertFirebaseObjectToSpotComponents(snapshot)
+            }
+            self.listSpotsCollectionVC.collectionView!.reloadData()
+        })
+        ref.queryOrderedByChild("date").observeEventType(.ChildRemoved, withBlock: { snapshot in
+            if let i = spots.indexOf({$0.key == snapshot.key}) {
+                spots.removeAtIndex(i)
+            }
+            self.listSpotsCollectionVC.collectionView!.reloadData()
+        })
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
+        //Firebase
+        ref = Firebase(url:"https://snapspot.firebaseio.com/spots")
+        
         self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
         
@@ -39,8 +67,6 @@ class ListSpotsViewController: UIViewController {
         ListSpotsMapVC.title = String.fontAwesomeIconWithName(.MapMarker)
         controllerArray.append(ListSpotsMapVC)
 
-        
-        
         // Customize menu (Optional)
         let parameters: [CAPSPageMenuOption] = [
             .MenuItemSeparatorWidth(0),
@@ -66,7 +92,6 @@ class ListSpotsViewController: UIViewController {
         // Optional delegate
         pageMenu!.delegate = self
         
-
         self.view.addSubview(pageMenu!.view)
         
     }
@@ -86,6 +111,12 @@ class ListSpotsViewController: UIViewController {
         }
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        ref.removeAllObservers()
+        spots = []
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

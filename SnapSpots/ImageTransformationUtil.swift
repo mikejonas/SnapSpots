@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ImageUtil {
+class ImageTransformationUtil {
     class func cropVerticalImageToSquare(image:UIImage) -> UIImage {
         let screenWidth = UIScreen.mainScreen().bounds.size.width
         let navbarHeight:CGFloat = 64

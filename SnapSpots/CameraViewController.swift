@@ -52,7 +52,7 @@ extension CameraViewController: CameraViewDelegate {
             if coord2d.latitude != 0 {photoCoordiantes = coord2d}
             self.dismissViewControllerAnimated(false, completion: { () -> Void in
                 self.presentViewController(editSpotVc, animated: false) { () -> Void in
-                    editSpotVc.addImage(ImageUtil.scaleImageTo(newWidth: 1080, image: image))
+                    editSpotVc.addImage(ImageTransformationUtil.scaleImageTo(newWidth: 1080, image: image))
                     editSpotVc.updateMapAndReverseGeocode(photoCoordiantes)
                 }
             })
@@ -60,7 +60,7 @@ extension CameraViewController: CameraViewDelegate {
     }
     func cameraViewShutterButtonTapped(image: UIImage?) {
         if let image = image {
-            editSpotVc.addImage(ImageUtil.scaleImageTo(newWidth: 1080, image: image))
+            editSpotVc.addImage(ImageTransformationUtil.scaleImageTo(newWidth: 1080, image: image))
         }
         presentViewController(editSpotVc, animated: false) { () -> Void in
             
@@ -76,7 +76,7 @@ extension CameraViewController: EditSpotViewControllerDelegate {
     func spotClosed() {
         dismissViewControllerAnimated(false, completion: nil)
     }
-    func spotSaved(spotComponents: SpotComponents, oldSpotComponents: SpotComponents) {
+    func spotSaved(spotComponents: SpotComponents) {
         saveNewSpot(spotComponents)
         dismissViewControllerAnimated(true, completion: nil)
         pageController.goToNextVC()

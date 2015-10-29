@@ -17,14 +17,18 @@ struct SpotComponents: CustomStringConvertible {
     var user: String?
     var caption: String?
     var hashTags: [String]?
-    var localImagePaths: [String] = []
-    var images: [UIImage] = []
+    var images:[ImageComponents] = []
     var addressComponents = SpotAddressComponents()
     var date:NSDate?
     var isSynced:Bool?
     var description: String {
-        return "\n caption: \(caption) \n hashTags: \(hashTags) \n images: \(images) \(localImagePaths) \n addressComponents: \(addressComponents)"
+        return "\n caption: \(caption) \n hashTags: \(hashTags) \n images: \(images) \n addressComponents: \(addressComponents)"
     }
+}
+
+struct ImageComponents {
+    var image:UIImage?
+    var path:String?
 }
 
 struct SpotAddressComponents: CustomStringConvertible {
@@ -54,19 +58,18 @@ func convertFirebaseObjectToSpotComponents(spotObject:FDataSnapshot) -> SpotComp
         country: json["location"]["country"].string,
         fullAddress: json["location"]["address"].string
     )
-    
     let spotComponents = SpotComponents(
         key: spotObject.key,
         user: nil,
         caption: json["caption"].string,
         hashTags: json["hashTags"].arrayValue.map { $0.string!},
-        localImagePaths: json["localImagePaths"].arrayValue.map { $0.string!},
-        images: [],
+        images: json["localImagePaths"].arrayValue.map { ImageComponents(image: nil, path: $0.string)},
         addressComponents: spotAddressComponents,
         date: convertTimeStampToNSDate(json["date"].double),
         isSynced: nil
     )
-    imageFileController?.appendToImageDownloadQueue(spotComponents.localImagePaths)
+    
+//    imageFileController?.appendToImageDownloadQueue(json["localImagePaths"].arrayValue.map { $0.string!})
     
     return spotComponents
 }
@@ -82,9 +85,10 @@ func saveNewSpot(components: SpotComponents) {
     
     newSpot["caption"] = components.caption
     newSpot["hashTags"] = components.hashTags
-    newSpot["localImagePaths"] = components.localImagePaths
     
-    imageFileController?.saveImagesToApp(components.images, imagePaths: newSpot["localImagePaths"] as! [String])
+    getImagePathsAndSave(components.images) { (imagePaths) -> () in
+        newSpot["localImagePaths"] = imagePaths
+    }
     newSpot["date"] = components.date?.timeIntervalSince1970
     if let coordinates = components.addressComponents.coordinates {
         newSpotLocation["coordinates"] = ["lat" : coordinates.latitude, "lng" : coordinates.longitude]
@@ -111,46 +115,62 @@ func saveNewSpot(components: SpotComponents) {
     newSpotRef.setValue(newSpot)
 }
 
-func updateSpot(newComponents: SpotComponents, oldComponents: SpotComponents) {
+func getImagePathsAndSave(images:[ImageComponents], completion:(imagePaths:[String]) ->() ) {
+    var imagePaths:[String] = []
+    for var image in images {
+        if image.path == nil {
+            image.path = "\(randomStringWithLength(9)).jpg"
+            if let jpgImageData = UIImageJPEGRepresentation(image.image!, 0.4) {
+                imageFileController?.saveImageToApp(jpgImageData, imagePath: image.path!, completion: { (isSuccess) -> () in
+                    imageFileController?.appendToImageUploadQueue(image.path!)
+                })
+            }
+        }
+        imagePaths.append(image.path!)
+    }
+    completion(imagePaths: imagePaths)
+}
+
+func updateSpot(components: SpotComponents) {
     
     let ref = Firebase(url: "https://snapspot.firebaseio.com")
     let spotsRef = ref.childByAppendingPath("spots")
-    let spotRef = spotsRef.childByAppendingPath(newComponents.key)
-    var newImages:[String] = []
-    for imagePath in newComponents.localImagePaths {
-        if oldComponents.localImagePaths.contains(imagePath) {
-            newImages.append(imagePath)
-        }
-        
+    let spotRef = spotsRef.childByAppendingPath(components.key)
+    
+    var paths:[String] = []
+    getImagePathsAndSave(components.images) { (imagePaths) -> () in
+        paths = imagePaths
     }
+
     spotRef.updateChildValues([
-        "caption":newComponents.caption!,
-        "hashTags":newComponents.hashTags!,
-        "localImagePaths":newComponents.localImagePaths
+        "caption":components.caption!,
+        "hashTags":components.hashTags!,
+        "localImagePaths":paths        
     ])
+
+//    newSpot["date"] = components.date?.timeIntervalSince1970
+//    if let coordinates = components.addressComponents.coordinates {
+//        newSpotLocation["coordinates"] = ["lat" : coordinates.latitude, "lng" : coordinates.longitude]
+//    }
+//    if let address = components.addressComponents.fullAddress {
+//        newSpotLocation["address"] = address
+//    }
+//    if let locality = components.addressComponents.locality {
+//        newSpotLocation["locality"] = locality
+//    }
+//    if let subLocality = components.addressComponents.subLocality {
+//        newSpotLocation["subLocality"] = subLocality
+//    }
+//    if let administrativeArea = components.addressComponents.administrativeArea {
+//        newSpotLocation["administrativeArea"] = administrativeArea
+//    }
+//    if let country = components.addressComponents.country {
+//        newSpotLocation["country"] = country
+//    }
+//    newSpot["location"] = newSpotLocation
+//    let newSpotRef = spotsRef.childByAutoId()
+//    print("KEY: \(newSpotRef.key)")
     
-    
-    //    let newComponentsImagePaths = components.localImagePaths
-    //    let localComponentsImagePaths = spotRef["localImagePaths"] as! [String]
-    //
-    //    //DELETE IMAGES
-    //    var imagesToDelete:[String] = []
-    //    for imagePath in localComponentsImagePaths {
-    //        if !newComponentsImagePaths.contains(imagePath) {
-    //            imagesToDelete.append(imagePath)
-    //        }
-    //    }
-    //    deleteImagesLocallyFromApp(imagesToDelete)
-    //    //Save Images
-    //    var imagesToSave:[UIImage] = []
-    //    var imagePathsToSave:[String] = []
-    //    for (i, newImagePath) in newComponentsImagePaths.enumerate() {
-    //        if !localComponentsImagePaths.contains(newImagePath) {
-    //            imagesToSave.append(components.images[i])
-    //            imagePathsToSave.append(newImagePath)
-    //        }
-    //    }
-    //    saveImagesLocally(imagesToSave, newImagePaths: imagePathsToSave)
     
 }
 
@@ -161,7 +181,7 @@ func deleteSpot(components: SpotComponents) {
     let spotRef = spotsRef.childByAppendingPath(components.key)
     spotRef.removeValueWithCompletionBlock { (error, object) -> Void in
         if error == nil {
-            print(imageFileController?.deleteImagesFromApp(components.localImagePaths))
+            print(imageFileController?.deleteImagesFromApp(components.images.map{$0.path!}))
         } else {
             print(error)
         }
@@ -200,16 +220,13 @@ private func getCoordinatesFromlatlng(lat:Double?, lng:Double?) ->CLLocationCoor
 }
 
 
-func retrieveImagesLocally(imageFileNames:[String]) -> [UIImage] {
-    var images:[UIImage] = []
-
-    for imageFileName in imageFileNames {
-        let path = NSURL(fileURLWithPath: documentsPath).URLByAppendingPathComponent(imageFileName)
-        if let imageData = NSData(contentsOfURL: path) {
-            images.append(UIImage(data: imageData)!)
-        }
+func retrieveImageLocally(imagePath:String) -> UIImage? {
+    let urlPath = NSURL(fileURLWithPath: documentsPath).URLByAppendingPathComponent(imagePath)
+    if let imageData = NSData(contentsOfURL: urlPath) {
+       return UIImage(data: imageData)
+    } else {
+        return nil
     }
-    return images
 }
 
 func randomStringWithLength(len:Int) -> String {

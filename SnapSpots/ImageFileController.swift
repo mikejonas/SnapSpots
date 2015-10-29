@@ -92,38 +92,25 @@ extension ImageFileController {
 //        }
     }
     
-    func saveImagesToApp(images:[UIImage], imagePaths:[String]) {
-        for (i, image) in images.enumerate() {
-            let url = NSURL(fileURLWithPath: documentsPath).URLByAppendingPathComponent(imagePaths[i])
-            if let jpgImageData = UIImageJPEGRepresentation(image, 0.4) {
-                let result = jpgImageData.writeToURL(url, atomically: true)
-                if result == true {
-                    appendToImageUploadQueue(imagePaths[i])
-                }
-            }
-        }
-    }
-    
-    func saveImageDataToApp(imageData:NSData, imagePath:String) {
+    func saveImageToApp(imageData:NSData, imagePath:String, completion:(isSuccess:Bool) ->() ) {
         let url = NSURL(fileURLWithPath: documentsPath).URLByAppendingPathComponent(imagePath)
-        imageData.writeToURL(url, atomically: true)
+        let isSuccess = imageData.writeToURL(url, atomically: true)
+        completion(isSuccess: isSuccess)
     }
     
-    func appendToImageDownloadQueue(fileNames:[String]?) {
-        if let fileNames = fileNames {
-            do {
-                let fileList = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(documentsPath)
-                for fileName in fileNames {
-                    if !fileList.contains(fileName) {
-                        imageDownloadQueue.append(fileName)
-                    } else {
-                        
-                    }
+    func appendToImageDownloadQueue(fileNames:[String]) {
+        do {
+            let fileList = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(documentsPath)
+            for fileName in fileNames {
+                if !fileList.contains(fileName) {
+                    imageDownloadQueue.append(fileName)
+                } else {
+                    
                 }
-                saveAllImagesFromCloudToApp()
-            } catch {
-                
             }
+            saveAllImagesFromCloudToApp()
+        } catch {
+            
         }
         print("Image download queue \(imageDownloadQueue)")
     }
@@ -191,7 +178,7 @@ extension ImageFileController {
         }
     }
     
-    private func appendToImageUploadQueue(fileName:String) {
+    func appendToImageUploadQueue(fileName:String) {
         if var imageUploadQueue = defaults.objectForKey("imageUploadQueue") as? [String] {
             imageUploadQueue.append(fileName)
             defaults.setObject(imageUploadQueue, forKey: "imageUploadQueue")

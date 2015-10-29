@@ -7,13 +7,14 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ImageScrollView: UIView, UIScrollViewDelegate {
     
     var scrollView = UIScrollView()
     var pageControl = UIPageControl()
     var pageViews: [UIImageView?] = []
-    var images: [UIImage]?
+    var images: [ImageComponents] = []
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,16 +39,15 @@ class ImageScrollView: UIView, UIScrollViewDelegate {
         print(pageControl.bounds.width)
     }
     
-    func setupWithImages(images:[UIImage], width:CGFloat) {
-        self.images = images
+    func setupWithImageComponents(imageComponents:[ImageComponents], width:CGFloat) {
+        self.images = imageComponents
         setupView(width)
-        
     }
     func setupView(width:CGFloat) {
         scrollView.frame = CGRectMake(0, 0, width, width)
         pageControl.frame = CGRectMake(width / 2, width - 10, 0, 0)
         
-        if let images = images {
+        if images.count > 0 {
             // 0
             pageControl.currentPage = 0
             pageControl.numberOfPages = images.count
@@ -72,17 +72,26 @@ class ImageScrollView: UIView, UIScrollViewDelegate {
         frame.origin.y = 0.0
         
         // 2
-        let newPageView = UIImageView(image: images![page])
-        newPageView.contentMode = .ScaleAspectFit
-        newPageView.frame = frame
-        scrollView.addSubview(newPageView)
-        
-        // 3
-        pageViews[page] = newPageView
+        if let imagePath = images[page].path {
+            let newPageView = UIImageView()
+            
+            if let image = retrieveImageLocally(imagePath) {
+                newPageView.image = image
+            } else {
+                let URL = NSURL(string: "https://s3-us-west-1.amazonaws.com/snapspots/images/\(imagePath)")!
+                newPageView.kf_setImageWithURL(URL)
+            }
+            newPageView.contentMode = .ScaleAspectFit
+            newPageView.frame = frame
+            scrollView.addSubview(newPageView)
+            
+            // 3
+            pageViews[page] = newPageView
+        }
     }
     func loadPages() {
         // Load pages in our range
-        for i in 0 ..< images!.count {
+        for i in 0 ..< images.count {
             loadPage(i)
         }
     }

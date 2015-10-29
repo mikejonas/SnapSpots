@@ -102,7 +102,7 @@ import AVFoundation
                 { (imageDataSampleBuffer, error) -> Void in
                     self.imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
                     let convertedImage = UIImage(data: self.imageData!)!
-                    let croppedImage = ImageUtil.cropVerticalImageToSquare(convertedImage)
+                    let croppedImage = ImageTransformationUtil.cropVerticalImageToSquare(convertedImage)
                     self.delegate?.cameraViewShutterButtonTapped(croppedImage)
             }
         } else {

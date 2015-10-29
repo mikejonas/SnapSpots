@@ -9,11 +9,14 @@
 import UIKit
 //import GoogleMaps
 import FontAwesome_swift
+import Firebase
 
 class ViewSpotViewController: UIViewController {
+    var ref: Firebase!
+    var postKey: String?
     
     var spotComponents: SpotComponents?
-    var images: [UIImage]?
+    var images: [ImageComponents] = []
     var superViewScreenShot:UIImage?
     var dateFormatter = NSDateFormatter()
     var locationCoordinates:CLLocationCoordinate2D?
@@ -51,12 +54,22 @@ class ViewSpotViewController: UIViewController {
 
     
     override func viewWillAppear(animated: Bool) {
-        if let spotComponents = spotComponents {
-            reloadData(spotComponents)
-        }
+        super.viewWillAppear(animated)
+        print("will appear!")
+        let spotRef = ref.childByAppendingPath(postKey)
+        spotRef.observeSingleEventOfType(.Value, withBlock: { snapshot in
+            // do some stuff once
+            self.spotComponents = convertFirebaseObjectToSpotComponents(snapshot)
+            dispatch_async(dispatch_get_main_queue()) {
+            self.reloadData()
+            }
+        })
+        
     }
     
     override func viewDidAppear(animated: Bool) {
+        print("did appear!")
+
         editSpotVc.delegate = self
 
     }
@@ -66,25 +79,21 @@ class ViewSpotViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        ref = Firebase(url: "https://snapspot.firebaseio.com/spots")
+        
         backButton.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 0.6)
         backButton.titleLabel?.font = UIFont.fontAwesomeOfSize(15)
         backButton.setTitle(String.fontAwesomeIconWithName(FontAwesome.ChevronDown), forState: .Normal)
         backButton.layer.cornerRadius = 16
         
         editButton.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 0.6)
-//        editButton.titleLabel?.font = UIFont.fontAwesomeOfSize(15)
-//        editButton.setTitle(String.fontAwesomeIconWithName(FontAwesome.Pencil), forState: .Normal)
-//        editButton.setAttributedTitle(<#title: NSAttributedString!#>, forState: <#UIControlState#>)
         editButton.layer.cornerRadius = 16
-        
-        
         
         editButtonFrame = editButton.frame
         backButtonFrame = backButton.frame
         self.scrollView.delegate = self
         self.captionTextView.delegate = self
-        
-
         
         if let screenShot = superViewScreenShot {
             let backgroundView = UIImageView(image: screenShot)
@@ -103,9 +112,6 @@ class ViewSpotViewController: UIViewController {
         
         closeMapsBarNub.layer.cornerRadius = 4
         closeMapsBarNub.clipsToBounds = true
-        
-//        println(spotObject)
-
     }
 
     override func viewDidLayoutSubviews() {
@@ -135,44 +141,41 @@ class ViewSpotViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func reloadData(spot:SpotComponents) {
+    func reloadData() {
         isScrolledTOMap = false
         CloseMapsBar.hidden = true
         
-        //Image
-        let images = retrieveImagesLocally(spot.localImagePaths)
-        self.images = images
-        imageScrollView.setupWithImages(images, width: self.view.bounds.width)
-        imageScrollView.clipsToBounds = true
-        imageScrollViewHeight = imageScrollView.bounds.width
-        
+        if let spotComponents = spotComponents {
+            imageScrollView.setupWithImageComponents(spotComponents.images, width: self.view.bounds.width)
+            imageScrollView.clipsToBounds = true
+            imageScrollViewHeight = imageScrollView.bounds.width
+            
+            //Caption
+            if let caption = spotComponents.caption {
+                captionTextView.text = caption
+                captionTextView.resolveHashTags()
+            }
+            
+            //Date
+            let attrs = [
+                NSFontAttributeName : UIFont.systemFontOfSize(11.0),
+                NSForegroundColorAttributeName: UIColor.lightGrayColor()
+            ]
+            if let timeStamp = spotComponents.date {
+                dateFormatter.dateFormat = "MMMM dd, yyyy"
+                let dateString = "Added: \(dateFormatter.stringFromDate(timeStamp))"
+                captionTextView.appendAttributedText(dateString, attributes: attrs)
+            }
+            
+            //Address
+            if let address = spotComponents.addressComponents.fullAddress {
+                addressTextView.text = address
+            }
 
-        
-        //Caption
-        if let caption = spot.caption {
-            captionTextView.text = caption
-            captionTextView.resolveHashTags()
-        }
-        
-        //Date
-        let attrs = [
-            NSFontAttributeName : UIFont.systemFontOfSize(11.0),
-            NSForegroundColorAttributeName: UIColor.lightGrayColor()
-        ]
-        if let timeStamp = spot.date {
-            dateFormatter.dateFormat = "MMMM dd, yyyy"
-            let dateString = "Added: \(dateFormatter.stringFromDate(timeStamp))"
-            captionTextView.appendAttributedText(dateString, attributes: attrs)
-        }
-        
-        //Address
-        if let address = spot.addressComponents.fullAddress {
-            addressTextView.text = address
-        }
-
-        //Map
-        if let coordinates = spot.addressComponents.coordinates {
-            updateMap(coordinates)
+            //Map
+            if let coordinates = spotComponents.addressComponents.coordinates {
+                updateMap(coordinates)
+            }
         }
     }
     
@@ -366,13 +369,10 @@ extension ViewSpotViewController: EditSpotViewControllerDelegate {
         dismissViewControllerAnimated(false, completion: nil)
     }
     
-    func spotSaved(spotComponents: SpotComponents, oldSpotComponents: SpotComponents) {
+    func spotSaved(spotComponents: SpotComponents) {
         print("delegate from view spot vc saved")
-        updateSpot(spotComponents, oldComponents: oldSpotComponents)
-        dismissViewControllerAnimated(false) { () -> Void in
-            self.reloadData(spotComponents)
-        }
-
+        updateSpot(spotComponents)
+        dismissViewControllerAnimated(false, completion: nil)
     }
     func spotDeleted(spotComponents: SpotComponents) {
         deleteSpot(spotComponents)
