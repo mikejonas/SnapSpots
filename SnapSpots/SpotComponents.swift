@@ -78,101 +78,61 @@ func saveNewSpot(components: SpotComponents) {
 //    print(components)
     
     let ref = Firebase(url: "https://snapspot.firebaseio.com")
-    let spotsRef = ref.childByAppendingPath("spots")
-    
-    var newSpot = [String:AnyObject]()
-    var newSpotLocation = [String:AnyObject]()
-    
-    newSpot["caption"] = components.caption
-    newSpot["hashTags"] = components.hashTags
-    
-    getImagePathsAndSave(components.images) { (imagePaths) -> () in
-        newSpot["localImagePaths"] = imagePaths
-    }
-    newSpot["date"] = components.date?.timeIntervalSince1970
-    if let coordinates = components.addressComponents.coordinates {
-        newSpotLocation["coordinates"] = ["lat" : coordinates.latitude, "lng" : coordinates.longitude]
-    }
-    if let address = components.addressComponents.fullAddress {
-        newSpotLocation["address"] = address
-    }
-    if let locality = components.addressComponents.locality {
-        newSpotLocation["locality"] = locality
-    }
-    if let subLocality = components.addressComponents.subLocality {
-        newSpotLocation["subLocality"] = subLocality
-    }
-    if let administrativeArea = components.addressComponents.administrativeArea {
-        newSpotLocation["administrativeArea"] = administrativeArea
-    }
-    if let country = components.addressComponents.country {
-        newSpotLocation["country"] = country
-    }
-    newSpot["location"] = newSpotLocation
-    let newSpotRef = spotsRef.childByAutoId()
-    print("KEY: \(newSpotRef.key)")
+    let spotRef = ref.childByAppendingPath("spots").childByAutoId()
 
-    newSpotRef.setValue(newSpot)
+    let spot = convertSpotComponentsIntoDictionary(components)
+    
+    spotRef.setValue(spot)
 }
 
-func getImagePathsAndSave(images:[ImageComponents], completion:(imagePaths:[String]) ->() ) {
-    var imagePaths:[String] = []
-    for var image in images {
-        if image.path == nil {
-            image.path = "\(randomStringWithLength(9)).jpg"
-            if let jpgImageData = UIImageJPEGRepresentation(image.image!, 0.4) {
-                imageFileController?.saveImageToApp(jpgImageData, imagePath: image.path!, completion: { (isSuccess) -> () in
-                    imageFileController?.appendToImageUploadQueue(image.path!)
-                })
-            }
-        }
-        imagePaths.append(image.path!)
-    }
-    completion(imagePaths: imagePaths)
-}
+
 
 func updateSpot(components: SpotComponents) {
     
     let ref = Firebase(url: "https://snapspot.firebaseio.com")
-    let spotsRef = ref.childByAppendingPath("spots")
-    let spotRef = spotsRef.childByAppendingPath(components.key)
+    let spotRef = ref.childByAppendingPath("spots").childByAppendingPath(components.key)
     
-    var paths:[String] = []
-    getImagePathsAndSave(components.images) { (imagePaths) -> () in
-        paths = imagePaths
-    }
+    let spot = convertSpotComponentsIntoDictionary(components)
 
-    spotRef.updateChildValues([
-        "caption":components.caption!,
-        "hashTags":components.hashTags!,
-        "localImagePaths":paths        
-    ])
-
-//    newSpot["date"] = components.date?.timeIntervalSince1970
-//    if let coordinates = components.addressComponents.coordinates {
-//        newSpotLocation["coordinates"] = ["lat" : coordinates.latitude, "lng" : coordinates.longitude]
-//    }
-//    if let address = components.addressComponents.fullAddress {
-//        newSpotLocation["address"] = address
-//    }
-//    if let locality = components.addressComponents.locality {
-//        newSpotLocation["locality"] = locality
-//    }
-//    if let subLocality = components.addressComponents.subLocality {
-//        newSpotLocation["subLocality"] = subLocality
-//    }
-//    if let administrativeArea = components.addressComponents.administrativeArea {
-//        newSpotLocation["administrativeArea"] = administrativeArea
-//    }
-//    if let country = components.addressComponents.country {
-//        newSpotLocation["country"] = country
-//    }
-//    newSpot["location"] = newSpotLocation
-//    let newSpotRef = spotsRef.childByAutoId()
-//    print("KEY: \(newSpotRef.key)")
     
+    spotRef.updateChildValues(spot)
     
 }
+
+func convertSpotComponentsIntoDictionary(components: SpotComponents) -> [String : AnyObject] {
+    var spot = [String:AnyObject]()
+    var spotLocation = [String:AnyObject]()
+    
+    spot["caption"] = components.caption
+    spot["hashTags"] = components.hashTags
+    
+    getImagePathsAndSave(components.images) { (imagePaths) -> () in
+        spot["localImagePaths"] = imagePaths
+    }
+    spot["date"] = components.date?.timeIntervalSince1970
+    if let coordinates = components.addressComponents.coordinates {
+        spotLocation["coordinates"] = ["lat" : coordinates.latitude, "lng" : coordinates.longitude]
+    }
+    if let address = components.addressComponents.fullAddress {
+        spotLocation["address"] = address
+    }
+    if let locality = components.addressComponents.locality {
+        spotLocation["locality"] = locality
+    }
+    if let subLocality = components.addressComponents.subLocality {
+        spotLocation["subLocality"] = subLocality
+    }
+    if let administrativeArea = components.addressComponents.administrativeArea {
+        spotLocation["administrativeArea"] = administrativeArea
+    }
+    if let country = components.addressComponents.country {
+        spotLocation["country"] = country
+    }
+    spot["location"] = spotLocation
+    
+    return spot
+}
+
 
 func deleteSpot(components: SpotComponents) {
     
@@ -181,26 +141,33 @@ func deleteSpot(components: SpotComponents) {
     let spotRef = spotsRef.childByAppendingPath(components.key)
     spotRef.removeValueWithCompletionBlock { (error, object) -> Void in
         if error == nil {
-            print(imageFileController?.deleteImagesFromApp(components.images.map{$0.path!}))
+            imageFileController?.deleteImages(components.images.map{$0.path!})
         } else {
             print(error)
         }
     }
-    
-    //    let query = PFQuery(className:"Spot")
-    //    query.fromLocalDatastore()
-    //    query.whereKey("date", equalTo: spotComponents.date!)
-    //    query.getFirstObjectInBackgroundWithBlock { (returnedSpotObject, error) -> Void in
-    //        if let spotObject = returnedSpotObject  {
-    //            spotObject.unpinInBackgroundWithBlock({ (success, error) -> Void in
-    //                if success {
-    //                    print(deleteImagesLocallyFromApp(spotObject["localImagePaths"] as? [String]))
-    //                    spotObject.deleteEventually()
-    //                }
-    //            })
-    //        }
-    //    }
 }
+
+// Maybe change this around to not use a completion
+private func getImagePathsAndSave(images:[ImageComponents], completion:(imagePaths:[String]) ->() ) {
+    var imagePaths:[String] = []
+    for var image in images {
+        if image.path == nil {
+            image.path = "\(randomStringWithLength(9)).jpg"
+            if let jpgImageData = UIImageJPEGRepresentation(image.image!, 0.4) {
+                imageFileController?.saveImageToApp(jpgImageData, imagePath: image.path!, completion: { (isSuccess) -> () in
+                    imageFileController?.appendToImageUploadQueue(image.path!)
+                    imageFileController?.saveAllImagesFromAppToCloud()
+                })
+            }
+        }
+        imagePaths.append(image.path!)
+    }
+
+    completion(imagePaths: imagePaths)
+}
+
+
 
 private func convertTimeStampToNSDate(timeStamp:Double?) -> NSDate? {
     if let timeStamp = timeStamp {

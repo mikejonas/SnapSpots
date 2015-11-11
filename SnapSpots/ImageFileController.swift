@@ -21,22 +21,20 @@ class ImageFileController: NSObject {
     
     
     
-    func deleteImagesFromApp(imageFileNames:[String]?) -> [String] {
-        var deletedImages:[String] = []
+    func deleteImages(imageFileNames:[String]?) {
         if let imageFileNames = imageFileNames {
             let fileManager = NSFileManager.defaultManager()
             for imageFileName in imageFileNames {
                 let path = NSURL(fileURLWithPath: documentsPath).URLByAppendingPathComponent(imageFileName)
                 do {
                     try fileManager.removeItemAtURL(path)
-                    deletedImages.append(imageFileName)
+                    deleteImageFromCloud(imageFileName)
                     removeFromImageUploadQueue(imageFileName)
                 } catch {
                     print("IMAGE NOT DELETED")
                 }
             }
         }
-        return deletedImages
     }
     
 
@@ -126,9 +124,13 @@ extension ImageFileController {
 
     
     //Not in use
-//    func deleteImageFromCloud(fileName:String) {
-//        amazonS3Manager.deleteObject("images/\(fileName)")
-//    }
+    func deleteImageFromCloud(fileName:String) {
+        amazonS3Manager.deleteObject("images/\(fileName)").responseS3Data { (response) -> Void in
+            if response.result.isSuccess {
+                self.removeImageFromDeleteQueue(fileName)
+            }
+        }
+    }
     
 }
 
@@ -182,12 +184,12 @@ extension ImageFileController {
         if var imageUploadQueue = defaults.objectForKey("imageUploadQueue") as? [String] {
             imageUploadQueue.append(fileName)
             defaults.setObject(imageUploadQueue, forKey: "imageUploadQueue")
-            saveAllImagesFromAppToCloud()
         } else {
             defaults.setObject([fileName], forKey: "imageUploadQueue")
         }
     }
     
+
     private func removeFromImageUploadQueue(fileName:String) {
         if var imageUploadQueue = defaults.objectForKey("imageUploadQueue") as? [String] {
             if let index = imageUploadQueue.indexOf(fileName) {
@@ -198,6 +200,23 @@ extension ImageFileController {
             defaults.setObject(imageUploadQueue, forKey: "imageUploadQueue")
             
             print("IMAGE UPLOAD QUEUE: \(imageUploadQueue)")
+        }
+    }
+    
+    func appendImageToDeleteQueue(fileName:String) {
+        if var deleteQueue = defaults.objectForKey("deleteQueue") as? [String] {
+            deleteQueue.append(fileName)
+            defaults.setObject(deleteQueue, forKey: "deleteQueue")
+        } else {
+            defaults.setObject([fileName], forKey: "deleteQueue")
+        }
+    }
+    private func removeImageFromDeleteQueue(fileName:String) {
+        if var deleteQueue = defaults.objectForKey("deleteQueue") as? [String] {
+            if let index = deleteQueue.indexOf(fileName) {
+                deleteQueue.removeAtIndex(index)
+            }
+            defaults.setObject(deleteQueue, forKey: "deleteQueue")
         }
     }
     

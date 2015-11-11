@@ -92,7 +92,19 @@ class ListSpotsCollectionViewController: UICollectionViewController {
                     cell.imageThumbnail.image = image
                 } else {
                     let URL = NSURL(string: "https://s3-us-west-1.amazonaws.com/snapspots/images/\(imagePath)")!
-                    cell.imageThumbnail.kf_setImageWithURL(URL)
+                    cell.imageThumbnail.kf_setImageWithURL(URL,
+                        placeholderImage: nil,
+                        optionsInfo: nil,
+                        progressBlock: { (receivedSize, totalSize) -> () in
+                            print("Download Progress: \(receivedSize)/\(totalSize)")
+                        },
+                        completionHandler: { (image, error, cacheType, imageURL) -> () in
+                            print("error: \(error)")
+                            print("cacheType \(cacheType)")
+                            print("imageURL \(imageURL)")
+                        }
+                    )
+                    
                 }
             } else {
                 //No Images found?
