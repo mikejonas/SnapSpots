@@ -75,14 +75,22 @@ func convertFirebaseObjectToSpotComponents(spotObject:FDataSnapshot) -> SpotComp
 }
 
 func saveNewSpot(components: SpotComponents) {
-//    print(components)
     
     let ref = Firebase(url: "https://snapspot.firebaseio.com")
-    let spotRef = ref.childByAppendingPath("spots").childByAutoId()
+    let newSpotRef = ref.childByAppendingPath("spots").childByAutoId()
+    let newSpotKey = newSpotRef.key
 
     let spot = convertSpotComponentsIntoDictionary(components)
     
-    spotRef.setValue(spot)
+    let updatedData = [
+        "test/\(newSpotKey)" : spot,
+        "groups_spots/group_id" : [newSpotKey: true]
+    ]
+    
+    ref.updateChildValues(updatedData) { (error, ref) -> Void in
+        
+    }
+    
 }
 
 

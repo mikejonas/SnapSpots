@@ -11,6 +11,7 @@
         <!--Edit Spot View Controller-->
         <scene sceneID="OB4-Q9-4Ar">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PKr-wO-CKH" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="EditSpotViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Jye-Xx-Lud" customClass="EditSpotViewController" customModule="SnapSpots" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="7pg-wU-kJh"/>
@@ -452,7 +453,8 @@
                                         <exclude reference="wUO-12-ERt"/>
                                     </mask>
                                 </variation>
-                                <variation key="widthClass=compact">
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="0.0" y="64" width="400" height="936"/>
                                     <mask key="constraints">
                                         <include reference="Mm4-r9-k93"/>
                                         <include reference="ifN-CH-F2f"/>
@@ -490,7 +492,8 @@
                                         <exclude reference="V2A-HU-SXJ"/>
                                     </mask>
                                 </variation>
-                                <variation key="widthClass=compact">
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="0.0" y="20" width="400" height="44"/>
                                     <mask key="constraints">
                                         <include reference="V2A-HU-SXJ"/>
                                     </mask>
@@ -547,6 +550,7 @@
                             </mask>
                         </variation>
                     </view>
+                    <navigationItem key="navigationItem" id="RFZ-Ot-gBU"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="400" height="1000"/>
                     <connections>
@@ -565,9 +569,8 @@
                         <outlet property="scrollView" destination="Y95-3l-YC1" id="176-Lo-MKB"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="PKr-wO-CKH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2655" y="-788"/>
+            <point key="canvasLocation" x="4269" y="-780"/>
         </scene>
         <!--Add Image Camera View Controller-->
         <scene sceneID="4hd-O3-sqG">
@@ -1640,6 +1643,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qzg-b3-e9h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="540" y="794"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="QZQ-KZ-Tke">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="isg-Mh-2Cs" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="UuJ-Ft-fZa">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Jye-Xx-Lud" kind="relationship" relationship="rootViewController" id="Bd6-Zf-716"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ja7-88-tnt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3492" y="-780"/>
         </scene>
     </scenes>
     <resources>

@@ -491,6 +491,110 @@
             </objects>
             <point key="canvasLocation" x="2259" y="-2583"/>
         </scene>
+        <!--Sign In View Controller-->
+        <scene sceneID="1sC-eb-Fxf">
+            <objects>
+                <viewController storyboardIdentifier="SignInViewController" id="YVW-Jx-MnD" customClass="SignInViewController" customModule="SnapSpots" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hk3-r6-O9D"/>
+                        <viewControllerLayoutGuide type="bottom" id="zZd-6z-gMU"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="tES-Ge-BxO">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4Ei-db-eC3" customClass="LoginTextField" customModule="SnapSpots" customModuleProvider="target">
+                                <rect key="frame" x="-25" y="-30" width="97" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="0.0" y="130" width="400" height="45"/>
+                                </variation>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3QG-5m-34A" customClass="LoginTextField" customModule="SnapSpots" customModuleProvider="target">
+                                <rect key="frame" x="-25" y="-30" width="97" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="0.0" y="177" width="400" height="45"/>
+                                </variation>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uoN-Qy-LMp">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Log In"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="0.0" y="237" width="400" height="50"/>
+                                </variation>
+                                <connections>
+                                    <action selector="signInButtonTapped:" destination="YVW-Jx-MnD" eventType="touchUpInside" id="aeH-yR-eEe"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hNG-Yf-92u">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="No account? Sign up"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="129" y="309" width="142" height="30"/>
+                                </variation>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yzx-ie-tXx">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="Forgot Password?"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="139" y="339" width="123" height="30"/>
+                                </variation>
+                            </button>
+                            <button opaque="NO" multipleTouchEnabled="YES" alpha="0.69999998807907104" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s59-UA-W2u">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="22"/>
+                                <state key="normal" image="Close">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="20" y="28" width="46" height="46"/>
+                                </variation>
+                                <connections>
+                                    <action selector="closeButtonTapped:" destination="YVW-Jx-MnD" eventType="touchUpInside" id="8Yh-9Q-a4R"/>
+                                    <action selector="closeButtonTapped:" destination="N70-LB-Uwq" eventType="touchUpInside" id="Eze-SY-aJJ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="4Ei-db-eC3"/>
+                                <exclude reference="3QG-5m-34A"/>
+                                <exclude reference="uoN-Qy-LMp"/>
+                                <exclude reference="hNG-Yf-92u"/>
+                                <exclude reference="yzx-ie-tXx"/>
+                                <exclude reference="s59-UA-W2u"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="4Ei-db-eC3"/>
+                                <include reference="3QG-5m-34A"/>
+                                <include reference="uoN-Qy-LMp"/>
+                                <include reference="hNG-Yf-92u"/>
+                                <include reference="yzx-ie-tXx"/>
+                                <include reference="s59-UA-W2u"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="closeButton" destination="s59-UA-W2u" id="wl8-z2-5BQ"/>
+                        <outlet property="passwordField" destination="3QG-5m-34A" id="Xeu-ho-MGC"/>
+                        <outlet property="usernameField" destination="4Ei-db-eC3" id="Bsf-ys-fN3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TLd-rF-Xrh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="450" y="-2478"/>
+        </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="kS4-YO-HEU">
             <objects>
@@ -503,48 +607,68 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BlE-J9-bpi">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BlE-J9-bpi" customClass="LoginTextField" customModule="SnapSpots" customModuleProvider="target">
                                 <rect key="frame" x="-25" y="-30" width="97" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="20" y="142" width="360" height="30"/>
+                                    <rect key="frame" x="0.0" y="133" width="400" height="45"/>
                                 </variation>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Xiv-Hh-lxW">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Xiv-Hh-lxW" customClass="LoginTextField" customModule="SnapSpots" customModuleProvider="target">
                                 <rect key="frame" x="-25" y="-30" width="97" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="20" y="180" width="360" height="30"/>
+                                    <rect key="frame" x="0.0" y="180" width="400" height="45"/>
                                 </variation>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6vP-Mu-UoP">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6vP-Mu-UoP" customClass="LoginTextField" customModule="SnapSpots" customModuleProvider="target">
                                 <rect key="frame" x="-25" y="-30" width="97" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="20" y="218" width="360" height="30"/>
+                                    <rect key="frame" x="0.0" y="227" width="400" height="45"/>
                                 </variation>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bAA-24-KEE">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Sign up"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="20" y="256" width="127" height="30"/>
+                                    <rect key="frame" x="0.0" y="288" width="400" height="50"/>
                                 </variation>
                                 <connections>
                                     <action selector="signUpButtonTapped:" destination="N70-LB-Uwq" eventType="touchUpInside" id="XQw-sC-9bG"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" multipleTouchEnabled="YES" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uFa-F8-P1K">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="22"/>
+                                <state key="normal" image="Close">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="20" y="28" width="46" height="46"/>
+                                </variation>
+                                <connections>
+                                    <action selector="closeButtonTapped:" destination="N70-LB-Uwq" eventType="touchUpInside" id="cYy-F5-geC"/>
+                                </connections>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="BlE-J9-bpi"/>
                                 <exclude reference="Xiv-Hh-lxW"/>
                                 <exclude reference="6vP-Mu-UoP"/>
                                 <exclude reference="bAA-24-KEE"/>
+                                <exclude reference="uFa-F8-P1K"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -553,10 +677,12 @@
                                 <include reference="Xiv-Hh-lxW"/>
                                 <include reference="6vP-Mu-UoP"/>
                                 <include reference="bAA-24-KEE"/>
+                                <include reference="uFa-F8-P1K"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="closeButton" destination="uFa-F8-P1K" id="TnH-6f-ywX"/>
                         <outlet property="emailField" destination="6vP-Mu-UoP" id="zSJ-9e-DAs"/>
                         <outlet property="passwordField" destination="Xiv-Hh-lxW" id="rIQ-Fd-xSA"/>
                         <outlet property="usernameField" destination="BlE-J9-bpi" id="Hzy-n2-rrl"/>
@@ -564,7 +690,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZoA-Hh-let" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="525" y="-2236"/>
+            <point key="canvasLocation" x="1135.5" y="-2478"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Y8V-eP-ahu">
@@ -585,6 +711,7 @@
     </scenes>
     <resources>
         <image name="Barcelona" width="598" height="598"/>
+        <image name="Close" width="33" height="33"/>
         <image name="Navigation Camera" width="22" height="22"/>
     </resources>
 </document>

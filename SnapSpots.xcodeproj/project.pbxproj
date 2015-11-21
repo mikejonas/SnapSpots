@@ -63,6 +63,8 @@
 		DD484B731BD602F600CC9317 /* CAPSPageMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD484B6A1BD602F600CC9317 /* CAPSPageMenu.swift */; };
 		DD484B741BD602F600CC9317 /* StringAndImageBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD484B6B1BD602F600CC9317 /* StringAndImageBarButtonItem.swift */; };
 		DD484BB61BD74E3200CC9317 /* ImageFileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD484BB51BD74E3200CC9317 /* ImageFileController.swift */; };
+		DDCE55D01BF58F76003EE4DB /* LoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE55CF1BF58F76003EE4DB /* LoginTextField.swift */; };
+		DDCE55D21BF5ADA2003EE4DB /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE55D11BF5ADA2003EE4DB /* SignInViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -153,6 +155,8 @@
 		DD484B6B1BD602F600CC9317 /* StringAndImageBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringAndImageBarButtonItem.swift; sourceTree = "<group>"; };
 		DD484B761BD6037A00CC9317 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		DD484BB51BD74E3200CC9317 /* ImageFileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFileController.swift; sourceTree = "<group>"; };
+		DDCE55CF1BF58F76003EE4DB /* LoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginTextField.swift; sourceTree = "<group>"; };
+		DDCE55D11BF5ADA2003EE4DB /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -306,6 +310,7 @@
 				DD484B641BD602F600CC9317 /* CameraView.swift */,
 				DD484B651BD602F600CC9317 /* CameraView.xib */,
 				DD484B661BD602F600CC9317 /* DebugImagesTableViewCell.swift */,
+				DDCE55CF1BF58F76003EE4DB /* LoginTextField.swift */,
 				DD484B671BD602F600CC9317 /* ImageScrollView.swift */,
 				DD484B681BD602F600CC9317 /* SetupViewSpotVC.swift */,
 				DD484B691BD602F600CC9317 /* SpotCollectionCell.swift */,
@@ -319,6 +324,7 @@
 			isa = PBXGroup;
 			children = (
 				DD484AC61BD5F9F400CC9317 /* ViewController.swift */,
+				DDCE55D11BF5ADA2003EE4DB /* SignInViewController.swift */,
 				DD484B241BD6024D00CC9317 /* SignUpViewController.swift */,
 				DD484B251BD6024D00CC9317 /* SettingsTableViewController.swift */,
 				DD484B261BD6024D00CC9317 /* AccountSettingsTableViewController.swift */,
@@ -595,6 +601,7 @@
 				DD3642611BE12B9D00459853 /* EditSpotViewController.swift in Sources */,
 				DD484B521BD6026200CC9317 /* TWImageScrollView.m in Sources */,
 				DD484AC71BD5F9F400CC9317 /* ViewController.swift in Sources */,
+				DDCE55D01BF58F76003EE4DB /* LoginTextField.swift in Sources */,
 				DD484B531BD6026200CC9317 /* TWPhoto.m in Sources */,
 				DD484B311BD6024D00CC9317 /* AccountSettingsTableViewController.swift in Sources */,
 				DD484B391BD6024D00CC9317 /* FilterSpotsTableViewController.swift in Sources */,
@@ -621,6 +628,7 @@
 				DD484B321BD6024D00CC9317 /* CameraViewController.swift in Sources */,
 				DD484B1D1BD5FF6100CC9317 /* UIView+Extension.swift in Sources */,
 				DD484B6F1BD602F600CC9317 /* DebugImagesTableViewCell.swift in Sources */,
+				DDCE55D21BF5ADA2003EE4DB /* SignInViewController.swift in Sources */,
 				DD484B721BD602F600CC9317 /* SpotCollectionCell.swift in Sources */,
 				DD484B601BD602CA00CC9317 /* LocationSearchCell.swift in Sources */,
 				DD3642631BE12BA800459853 /* AddImageCameraViewController.swift in Sources */,

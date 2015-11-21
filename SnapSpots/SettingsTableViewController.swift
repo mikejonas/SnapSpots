@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 
 class SettingsTableViewController: UITableViewController {
@@ -14,6 +15,11 @@ class SettingsTableViewController: UITableViewController {
     let tableSections = [3, 1, 2, 2]
     
     let signUpVc = UIStoryboard(name: "Settings", bundle: nil).instantiateViewControllerWithIdentifier("SignUpViewController") as! SignUpViewController
+    let signInVc = UIStoryboard(name: "Settings", bundle: nil).instantiateViewControllerWithIdentifier("SignInViewController") as! SignInViewController
+    let ref = Firebase(url: "https://snapspot.firebaseio.com")
+
+
+    
     
     @IBOutlet weak var logInCell: UITableViewCell!
     @IBOutlet weak var syncSwitch: UISwitch!
@@ -21,6 +27,15 @@ class SettingsTableViewController: UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        if ref.authData != nil {
+            // user authenticated
+            print(ref.authData);
+        } else {
+            print("NO USER!!!");
+        }
+        
+        
         refreshTable()
         
         self.navigationController?.navigationBar.barTintColor = UIColor(red: 33.0 / 255.0, green: 33.0 / 255.0, blue: 33.0 / 255.0, alpha: 1)
@@ -29,7 +44,10 @@ class SettingsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
     }
+    
+    
     
     
     @IBAction func syncSwitchTapped(sender: UISwitch) {
@@ -73,14 +91,13 @@ class SettingsTableViewController: UITableViewController {
     func showSignUpAlert(message:String?) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .ActionSheet)
         let createAccountAction = UIAlertAction(title: "Create account", style: .Default) { (action) in
-                self.presentViewController(self.signUpVc, animated: true, completion: nil)
+            self.presentViewController(self.signUpVc, animated: true, completion: nil)
+        }
+        let SignInAction = UIAlertAction(title: "Sign In", style: .Default) { (action) in
+            self.presentViewController(self.signInVc, animated: true, completion: nil)
         }
         alertController.addAction(createAccountAction)
-        
-//        let signInAction = UIAlertAction(title: "Sign in", style: .Default) { (action) in
-//            self.presentViewController(self.logInViewController, animated: true, completion: nil)
-//        }
-//        alertController.addAction(signInAction)
+        alertController.addAction(SignInAction)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
             self.syncSwitch.setOn(false, animated: true)
@@ -115,8 +132,13 @@ class SettingsTableViewController: UITableViewController {
         case 0:
             switch(indexPath.row) {
             case 0:
+                //LOGIN CELL
                 print("check current user")
-//                PFUser.currentUser() == nil ? showSignUpAlert(nil) : self.performSegueWithIdentifier("toAccountSettings", sender: self)
+                if ref.authData != nil {
+                    //Do something else
+                } else {
+                    showSignUpAlert("You need a SnapSpot account in order to sync")
+                }
             default: break
             }
         default:
