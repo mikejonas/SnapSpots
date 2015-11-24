@@ -96,12 +96,12 @@ class ListSpotsCollectionViewController: UICollectionViewController {
                         placeholderImage: nil,
                         optionsInfo: nil,
                         progressBlock: { (receivedSize, totalSize) -> () in
-                            print("Download Progress: \(receivedSize)/\(totalSize)")
+//                            print("Download Progress: \(receivedSize)/\(totalSize)")
                         },
                         completionHandler: { (image, error, cacheType, imageURL) -> () in
-                            print("error: \(error)")
-                            print("cacheType \(cacheType)")
-                            print("imageURL \(imageURL)")
+//                            print("error: \(error)")
+//                            print("cacheType \(cacheType)")
+//                            print("imageURL \(imageURL)")
                         }
                     )
                     

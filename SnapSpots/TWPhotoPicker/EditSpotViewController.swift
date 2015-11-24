@@ -13,7 +13,6 @@ import FontAwesome_swift
 
 protocol EditSpotViewControllerDelegate {
     //oldSpotComponents are used to reference when updating an existing spot.
-    func spotClosed()
     func spotSaved(spotComponents:SpotComponents)
     func spotDeleted(spotComponents:SpotComponents)
 }
@@ -23,8 +22,6 @@ class EditSpotViewController: UIViewController {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     
-    @IBOutlet weak var navigationBar: UINavigationBar!
-    //    @IBOutlet weak var keyboardActiveView: UIView!
     @IBOutlet weak var captionTextView: UITextView!
     @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var photoThumbnail0: UIImageView!
@@ -55,18 +52,12 @@ class EditSpotViewController: UIViewController {
     var imageArray: [UIImage] = []
     var imageViewArray: [UIImageView]!
     
-    var isEditing:Bool?
-    
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        var contentViewFrameHeight = contentView.frame.height
-        if deleteSpotButton.hidden == true {
-            contentViewFrameHeight = contentView.frame.height - deleteSpotButton.frame.height - 5
-        }
-        scrollView.contentSize = CGSizeMake(contentView.frame.width, contentViewFrameHeight)
-
-
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.automaticallyAdjustsScrollViewInsets = false
+        self.navigationController!.navigationBar.translucent = true
+        self.navigationController!.navigationBar.barStyle = UIBarStyle.Black
+        self.navigationController!.navigationBar.tintColor = UIColor.whiteColor()
     }
     
     override func viewDidLoad() {
@@ -77,17 +68,26 @@ class EditSpotViewController: UIViewController {
         setupMap()
         setupTextView()
         setupTextViewPlaceholder()
-        deleteSpotButton.hidden = true
         scrollView.delegate = self
         addImageCameraVC.delegate = self
         gpaViewController.placeDelegate = self
-
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
 
+    }
+
+    func showDeleteSpotButton(button:Bool) {
+        var contentViewFrameHeight = contentView.frame.height
+        if !button {
+            contentViewFrameHeight = contentView.frame.height - deleteSpotButton.frame.height - 5
+        }
+        scrollView.contentSize = CGSizeMake(contentView.frame.width, contentViewFrameHeight)
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        navigationBar.frame=CGRectMake(0, 0, self.view.frame.size.width, 64)  // Here you can set you Width and Height for
     }
     
 
@@ -98,29 +98,21 @@ class EditSpotViewController: UIViewController {
     }
     @IBAction func cancelButtonTapped(sender: UIBarButtonItem) {
         if (delegate != nil) {
-            delegate?.spotClosed()
+            dismissViewControllerAnimated(false, completion: nil)
             resetView()
         }
         
     }
-    @IBAction func saveButtonTapped(sender: UIBarButtonItem) {
+    @IBAction func nextButtonTapped(sender: UIBarButtonItem) {
         
-        //Caption
-        spotComponents.caption = captionTextView.text
-        if spotComponents.date == nil {
-            spotComponents.date = NSDate()
-        }
-        
-        //HashTags
-        captionTextView.extractHashTags { extractedHashtags in
-            self.spotComponents.hashTags = extractedHashtags
-        }
 
         
-        if (delegate != nil) {
-            delegate?.spotSaved(spotComponents)
-            resetView()
-        }
+//        if (delegate != nil) {
+//            delegate?.spotSaved(spotComponents)
+//            resetView()
+//        }
+        
+        performSegueWithIdentifier("SaveSpotSegue", sender: self)
     }
     
     @IBAction func deleteSpotButtonTapped(sender: AnyObject) {
@@ -132,6 +124,23 @@ class EditSpotViewController: UIViewController {
     
     @IBAction func refreshLocationButttonTapped(sender: UIButton) {
         refreshLocation(10)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if (segue.identifier == "SaveSpotSegue") {
+            
+            let destinationVc = segue.destinationViewController as! SaveSpotTableViewController
+            
+            spotComponents.caption = captionTextView.text
+            if spotComponents.date == nil {
+                spotComponents.date = NSDate()
+            }
+            captionTextView.extractHashTags { extractedHashtags in
+                self.spotComponents.hashTags = extractedHashtags
+            }
+            destinationVc.spotComponents = spotComponents
+
+        }
     }
     func stopTimerIfRunning() {
         if self.getLocationTimer != nil {
@@ -153,7 +162,6 @@ class EditSpotViewController: UIViewController {
     }
     
     func performGetLocation() {
-        print(":) :) :)")
         let locationController = Globals.constants.appDelegate.coreLocationController
         let location = locationController!.locationCoordinates
         if getLocationTimerCycles == 0 {

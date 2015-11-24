@@ -22,7 +22,7 @@ struct SpotComponents: CustomStringConvertible {
     var date:NSDate?
     var isSynced:Bool?
     var description: String {
-        return "\n caption: \(caption) \n hashTags: \(hashTags) \n images: \(images) \n addressComponents: \(addressComponents)"
+        return "\n key: \(key) \n caption: \(caption) \n hashTags: \(hashTags) \n images: \(images) \n addressComponents: \(addressComponents) \n"
     }
 }
 
@@ -41,6 +41,11 @@ struct SpotAddressComponents: CustomStringConvertible {
     var description: String {
         return " coordinates: \(coordinates) \n locality: \(locality) \n sublocality: \(subLocality) \n administrative area: \(administrativeArea) \n country: \(country) \n fullAddress \(fullAddress)"
     }
+}
+
+struct SpotGroupComponents {
+    var groupName:String!
+    var groupID:String!
 }
 
 private let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
@@ -74,20 +79,20 @@ func convertFirebaseObjectToSpotComponents(spotObject:FDataSnapshot) -> SpotComp
     return spotComponents
 }
 
-func saveNewSpot(components: SpotComponents) {
-    
-    let ref = Firebase(url: "https://snapspot.firebaseio.com")
-    let newSpotRef = ref.childByAppendingPath("spots").childByAutoId()
-    let newSpotKey = newSpotRef.key
+func saveNewSpot(components: SpotComponents, group: SpotGroupComponents) {
 
+    let ref = Firebase(url: "https://snapspot.firebaseio.com")
     let spot = convertSpotComponentsIntoDictionary(components)
     
+    let newSpotRef = ref.childByAppendingPath("spots").childByAutoId()
+    let newSpotKey = newSpotRef.key
+    
     let updatedData = [
-        "test/\(newSpotKey)" : spot,
-        "groups_spots/group_id" : [newSpotKey: true]
+        "spots/\(newSpotKey)" : spot,
+        "groups_spots/\(group.groupID)/\(newSpotKey)" : true
     ]
     
-    ref.updateChildValues(updatedData) { (error, ref) -> Void in
+    ref.updateChildValues(updatedData as [NSObject : AnyObject]) { (error, ref) -> Void in
         
     }
     

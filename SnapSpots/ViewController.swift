@@ -11,6 +11,7 @@ import UIKit
 //GLOBALS!!!
 let pageController = ViewController(transitionStyle: UIPageViewControllerTransitionStyle.Scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.Horizontal, options: nil)
 let editSpotVc = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("EditSpotViewController") as! EditSpotViewController
+let editSpotNavVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("EditSpotNavController")
 
 class ViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     

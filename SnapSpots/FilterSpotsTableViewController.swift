@@ -88,11 +88,10 @@ class FilterSpotsTableViewController: UITableViewController {
         // Return the number of sections.
         return 1
     }
-
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.sortedHashtagsArr.count
     }
-    
     
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -103,6 +102,8 @@ class FilterSpotsTableViewController: UITableViewController {
 
         return cell
     }
+    
+    
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         if let cellText = cell.textLabel?.text {

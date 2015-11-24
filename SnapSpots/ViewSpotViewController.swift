@@ -27,6 +27,7 @@ class ViewSpotViewController: UIViewController {
     @IBOutlet weak var statusBarBackgroundView: UIView!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var editButton: UIButton!
+    @IBOutlet weak var shareButton: UIButton!
     
     @IBOutlet weak var imageScrollView: ImageScrollView!
     @IBOutlet weak var captionTextView: UITextView!
@@ -46,6 +47,7 @@ class ViewSpotViewController: UIViewController {
     let screenSize: CGRect = UIScreen.mainScreen().bounds
     var backButtonFrame = CGRect()
     var editButtonFrame = CGRect()
+    var shareButtonFrame = CGRect()
     var imageScrollViewHeight = CGFloat()
     var mapViewTopPosition = CGFloat()
     var mapViewMinHeight = CGFloat()
@@ -89,9 +91,13 @@ class ViewSpotViewController: UIViewController {
         
         editButton.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 0.6)
         editButton.layer.cornerRadius = 16
+        shareButton.backgroundColor = UIColor(red: 30.0/255.0, green: 30.0/255.0, blue: 30.0/255.0, alpha: 0.6)
+        shareButton.layer.cornerRadius = 16
         
         editButtonFrame = editButton.frame
         backButtonFrame = backButton.frame
+        shareButtonFrame = backButton.frame
+
         self.scrollView.delegate = self
         self.captionTextView.delegate = self
         
@@ -267,9 +273,11 @@ class ViewSpotViewController: UIViewController {
     }
     
     @IBAction func editButtonTapped(sender: UIButton) {
-        self.presentViewController(editSpotVc, animated: false, completion: nil)
-        editSpotVc.editSpot(self.spotComponents)
-
+        let navigationController = UINavigationController(rootViewController: editSpotVc)
+        self.presentViewController(navigationController, animated: false) { () -> Void in
+            editSpotVc.showDeleteSpotButton(true)
+            editSpotVc.editSpot(self.spotComponents)
+        }
     }
 
     
@@ -323,9 +331,11 @@ extension ViewSpotViewController:UIScrollViewDelegate {
             if scrollY > imageScrollViewHeight - 70 {
                 backButton.frame = CGRectMake(backButton.frame.origin.x, imageScrollViewHeight - 70  + 22 - scrollY, backButton.frame.size.width, backButton.frame.size.height)
                 editButton.frame = CGRectMake(editButton.frame.origin.x, imageScrollViewHeight - 70  + 22 - scrollY, editButton.frame.size.width, editButton.frame.size.height)
+                shareButton.frame = CGRectMake(editButton.frame.origin.x, imageScrollViewHeight - 70  + 22 - scrollY, editButton.frame.size.width, editButton.frame.size.height)
             } else {
                 backButton.frame = backButtonFrame
                 editButton.frame = editButtonFrame
+                shareButton.frame = editButtonFrame
             }
             
             if scrollY > imageScrollViewHeight - 20 {

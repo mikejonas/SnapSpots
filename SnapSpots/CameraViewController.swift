@@ -51,7 +51,9 @@ extension CameraViewController: CameraViewDelegate {
             var photoCoordiantes: CLLocationCoordinate2D?
             if coord2d.latitude != 0 {photoCoordiantes = coord2d}
             self.dismissViewControllerAnimated(false, completion: { () -> Void in
-                self.presentViewController(editSpotVc, animated: false) { () -> Void in
+                let navigationController = UINavigationController(rootViewController: editSpotVc)
+                self.presentViewController(navigationController, animated: false) { () -> Void in
+                    editSpotVc.showDeleteSpotButton(false)
                     editSpotVc.addImage(ImageTransformationUtil.scaleImageTo(newWidth: 1080, image: image))
                     editSpotVc.updateMapAndReverseGeocode(photoCoordiantes)
                 }
@@ -59,12 +61,12 @@ extension CameraViewController: CameraViewDelegate {
         }
     }
     func cameraViewShutterButtonTapped(image: UIImage?) {
-        if let image = image {
-            editSpotVc.addImage(ImageTransformationUtil.scaleImageTo(newWidth: 1080, image: image))
-        }
-        presentViewController(editSpotVc, animated: false) { () -> Void in
-            
+        let navigationController = UINavigationController(rootViewController: editSpotVc)
+        self.presentViewController(navigationController, animated: false) { () -> Void in
             editSpotVc.refreshLocation(15)
+            if let image = image {
+                editSpotVc.addImage(ImageTransformationUtil.scaleImageTo(newWidth: 1080, image: image))
+            }
         }
     }
 }
@@ -77,7 +79,7 @@ extension CameraViewController: EditSpotViewControllerDelegate {
         dismissViewControllerAnimated(false, completion: nil)
     }
     func spotSaved(spotComponents: SpotComponents) {
-        saveNewSpot(spotComponents)
+//        saveNewSpot(spotComponents, nil)
         dismissViewControllerAnimated(true, completion: nil)
         pageController.goToNextVC()
     }

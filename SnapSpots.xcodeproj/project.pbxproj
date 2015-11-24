@@ -63,6 +63,7 @@
 		DD484B731BD602F600CC9317 /* CAPSPageMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD484B6A1BD602F600CC9317 /* CAPSPageMenu.swift */; };
 		DD484B741BD602F600CC9317 /* StringAndImageBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD484B6B1BD602F600CC9317 /* StringAndImageBarButtonItem.swift */; };
 		DD484BB61BD74E3200CC9317 /* ImageFileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD484BB51BD74E3200CC9317 /* ImageFileController.swift */; };
+		DD90BFB01C0073CB006308B0 /* SaveSpotTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD90BFAF1C0073CB006308B0 /* SaveSpotTableViewController.swift */; };
 		DDCE55D01BF58F76003EE4DB /* LoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE55CF1BF58F76003EE4DB /* LoginTextField.swift */; };
 		DDCE55D21BF5ADA2003EE4DB /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE55D11BF5ADA2003EE4DB /* SignInViewController.swift */; };
 /* End PBXBuildFile section */
@@ -155,6 +156,7 @@
 		DD484B6B1BD602F600CC9317 /* StringAndImageBarButtonItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringAndImageBarButtonItem.swift; sourceTree = "<group>"; };
 		DD484B761BD6037A00CC9317 /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		DD484BB51BD74E3200CC9317 /* ImageFileController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFileController.swift; sourceTree = "<group>"; };
+		DD90BFAF1C0073CB006308B0 /* SaveSpotTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveSpotTableViewController.swift; sourceTree = "<group>"; };
 		DDCE55CF1BF58F76003EE4DB /* LoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginTextField.swift; sourceTree = "<group>"; };
 		DDCE55D11BF5ADA2003EE4DB /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -378,6 +380,7 @@
 			isa = PBXGroup;
 			children = (
 				DD3642601BE12B9D00459853 /* EditSpotViewController.swift */,
+				DD90BFAF1C0073CB006308B0 /* SaveSpotTableViewController.swift */,
 				DD3642621BE12BA800459853 /* AddImageCameraViewController.swift */,
 			);
 			name = EditSpotViewController;
@@ -606,6 +609,7 @@
 				DD484B311BD6024D00CC9317 /* AccountSettingsTableViewController.swift in Sources */,
 				DD484B391BD6024D00CC9317 /* FilterSpotsTableViewController.swift in Sources */,
 				DD484B6C1BD602F600CC9317 /* ButtonIconRight.swift in Sources */,
+				DD90BFB01C0073CB006308B0 /* SaveSpotTableViewController.swift in Sources */,
 				DD484B371BD6024D00CC9317 /* ListSpotsMapViewController.swift in Sources */,
 				DD484B541BD6026200CC9317 /* TWPhotoCollectionViewCell.m in Sources */,
 				DD484B381BD6024D00CC9317 /* ViewSpotViewController.swift in Sources */,
