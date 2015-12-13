@@ -22,7 +22,7 @@ class SaveSpotTableViewController: UITableViewController {
                 //For each
                 let groupKey = snapshot.key
                 self.ref.childByAppendingPath("groups/\(groupKey)/name").observeSingleEventOfType(.Value, withBlock: { snapshot in
-                    let group = SpotGroupComponents(groupName: snapshot.value as! String, groupID: groupKey as String)
+                    let group = SpotGroupComponents(groupId: groupKey as String, groupName: snapshot.value as? String)
                     self.listGroups.append(group)
                     self.tableView.reloadData()
                 })
@@ -87,18 +87,18 @@ class SaveSpotTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        let deSelectedGroup = self.listGroups[indexPath.row]
-        if let itemToRemove = selectedSpotGroups.map({ $0.groupID }).indexOf(deSelectedGroup.groupID) {
-            selectedSpotGroups.removeAtIndex(itemToRemove)
-        }
-        print(selectedSpotGroups)
-        
+//        let deSelectedGroup = self.listGroups[indexPath.row]
+//        if let itemToRemove = selectedSpotGroups.map({ $0.groupID }).indexOf(deSelectedGroup.groupID) {
+//            selectedSpotGroups.removeAtIndex(itemToRemove)
+//        }
+//        print(selectedSpotGroups)
+//        
     }
     
     @IBAction func saveButtonTapped(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(false, completion: nil)
         for group in selectedSpotGroups {
-            saveNewSpot(spotComponents, group: group)
+            saveNewSpot(spotComponents, groupId: group.groupId!)
             
         }
 

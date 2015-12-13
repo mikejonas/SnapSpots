@@ -7,37 +7,32 @@
 //
 
 import UIKit
+import Firebase
+
 
 class FilterSpotsTableViewController: UITableViewController {
     
-    var sortedHashtagsArr:[(String, Int)] = []
+    var hashTagsArr:[(String, [String])] = []
+    var activePaths:[String] = []
+    var returnSpotsUtil = Globals.constants.appDelegate.returnSpotsUtil
 
     
     override func viewWillAppear(animated: Bool) {
-//        let query = PFQuery(className:"Spot")
-//        query.fromLocalDatastore()
-//        query.findObjectsInBackgroundWithBlock { (objects, error) -> Void in
-//            var hashtagArrays:[[String]] = []
-//            if let spots = objects {
-//                for spot in spots {
-//                    hashtagArrays.append(spot["hashTags"] as! [String])
-//                }
-//                self.sortedHashtagsArr = self.countAndsortArrays(hashtagArrays)
-//                self.tableView.reloadData()
-//            }
-//        }
+        
+        self.tableView.reloadData()
+
     }
     
     override func viewDidAppear(animated: Bool) {
-
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         tableView.delegate = self
         tableView.dataSource = self
-        
         tableView.setEditing(true, animated: true)
         
         
@@ -59,46 +54,23 @@ class FilterSpotsTableViewController: UITableViewController {
     }
     
     
-    func countAndsortArrays(hashtagArrays:[[String]]) -> [(String, Int)] {
-        var arr:[(String,Int)] = []
-        var sortedHashtagDict = [String:Int]()
-
-        for item in hashtagArrays {
-            for hashTag in item {
-                if (sortedHashtagDict[hashTag] != nil) {
-                    sortedHashtagDict[hashTag] = sortedHashtagDict[hashTag]! + 1
-                } else {
-                    sortedHashtagDict[hashTag] = 1
-                }
-            }
-        }
-        arr = sortedHashtagDict.sort({ (t1, t2) -> Bool in
-            return t1.0 < t2.0
-        })
-
-        
-        return arr
-    }
-    
     
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
-        return 1
+        return (returnSpotsUtil?.hashtagsArr.count)!
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.sortedHashtagsArr.count
+        return (returnSpotsUtil?.hashtagsArr[section].1.count)!
     }
     
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) 
-        let hashtag:(String,Int) = self.sortedHashtagsArr[indexPath.row]
-        cell.textLabel?.text = "#\(hashtag.0)"
-        cell.detailTextLabel?.text = "\(hashtag.1)"
+//        let hashtag = returnSpotsUitl
+        cell.textLabel?.text = returnSpotsUtil!.hashtagsArr[indexPath.section].1[indexPath.row].0
+        cell.detailTextLabel?.text = "\(returnSpotsUtil!.hashtagsArr[indexPath.section].1[indexPath.row].1)"
 
         return cell
     }
@@ -117,17 +89,33 @@ class FilterSpotsTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let selectedHashTag = self.sortedHashtagsArr[indexPath.row].0
-        Globals.variables.filterSpotsHashtag.append(selectedHashTag)
+        let groupId = returnSpotsUtil?.hashtagsArr[indexPath.section].0.groupId
+        let hashtag = returnSpotsUtil?.hashtagsArr[indexPath.section].1[indexPath.row].0
+        print("groupId \(groupId)")
+        print("hashtag \(hashtag)")
+//        returnSpotsUtil?.selectedHashtags.append((groupId, hashtag))
+//        Globals.variables.clearFirebaseObservers()
     }
-    
+
     override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        let deSelectedHashTag = self.sortedHashtagsArr[indexPath.row].0
+        let deSelectedHashTag = self.hashTagsArr[indexPath.row].0
         if let itemToRemove = Globals.variables.filterSpotsHashtag.indexOf(deSelectedHashTag) {
             Globals.variables.filterSpotsHashtag.removeAtIndex(itemToRemove)
         }
+        //        Globals.variables.clearFirebaseObservers()
+        
     }
     
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return returnSpotsUtil?.hashtagsArr[section].0.groupName
+    }
+    
+
 
     /*
     // Override to support conditional editing of the table view.
@@ -178,4 +166,28 @@ class FilterSpotsTableViewController: UITableViewController {
     }
     */
 
+    
+    //    func countAndsortArrays(hashtagArrays:[[String]]) -> [(String, Int)] {
+    //        var arr:[(String,Int)] = []
+    //        var sortedHashtagDict = [String:Int]()
+    //
+    //        for item in hashtagArrays {
+    //            for hashTag in item {
+    //                if (sortedHashtagDict[hashTag] != nil) {
+    //                    sortedHashtagDict[hashTag] = sortedHashtagDict[hashTag]! + 1
+    //                } else {
+    //                    sortedHashtagDict[hashTag] = 1
+    //                }
+    //            }
+    //        }
+    //        arr = sortedHashtagDict.sort({ (t1, t2) -> Bool in
+    //            return t1.1 > t2.1
+    //        })
+    //
+    //        
+    //        return arr
+    //    }
+    //    
+
+    
 }

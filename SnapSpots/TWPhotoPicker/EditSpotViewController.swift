@@ -430,7 +430,7 @@ extension EditSpotViewController {
             var markerTitleAndSnippet:(title: String?, snippet: String?)
             if let locality = addressComponents.locality {
                 if let localityPosition = addressString.rangeOfString(locality, options: .BackwardsSearch)?.startIndex {
-//                    markerTitleAndSnippet.title = addressString.substringToIndex(localityPosition.predecessor())
+                    markerTitleAndSnippet.title = addressString.substringToIndex(localityPosition.predecessor())
                     markerTitleAndSnippet.snippet = addressString.substringFromIndex(localityPosition)
                 }
             } else {

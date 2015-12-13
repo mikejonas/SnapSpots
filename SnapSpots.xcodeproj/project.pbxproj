@@ -66,6 +66,7 @@
 		DD90BFB01C0073CB006308B0 /* SaveSpotTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD90BFAF1C0073CB006308B0 /* SaveSpotTableViewController.swift */; };
 		DDCE55D01BF58F76003EE4DB /* LoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE55CF1BF58F76003EE4DB /* LoginTextField.swift */; };
 		DDCE55D21BF5ADA2003EE4DB /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCE55D11BF5ADA2003EE4DB /* SignInViewController.swift */; };
+		DDE4849E1C09AAD900F09544 /* ReturnSpotsUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE4849D1C09AAD900F09544 /* ReturnSpotsUtil.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -159,6 +160,7 @@
 		DD90BFAF1C0073CB006308B0 /* SaveSpotTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveSpotTableViewController.swift; sourceTree = "<group>"; };
 		DDCE55CF1BF58F76003EE4DB /* LoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginTextField.swift; sourceTree = "<group>"; };
 		DDCE55D11BF5ADA2003EE4DB /* SignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
+		DDE4849D1C09AAD900F09544 /* ReturnSpotsUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReturnSpotsUtil.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -284,6 +286,7 @@
 				DD484B101BD5FF5300CC9317 /* ImageTransformationUtil.swift */,
 				DD484B111BD5FF5300CC9317 /* LocationUtil.swift */,
 				DD484B121BD5FF5300CC9317 /* EditSpotUtil.swift */,
+				DDE4849D1C09AAD900F09544 /* ReturnSpotsUtil.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -619,6 +622,7 @@
 				DD484B191BD5FF5A00CC9317 /* Globals.swift in Sources */,
 				DD484B361BD6024D00CC9317 /* ListSpotsTableViewController.swift in Sources */,
 				DD484B181BD5FF5A00CC9317 /* SpotComponents.swift in Sources */,
+				DDE4849E1C09AAD900F09544 /* ReturnSpotsUtil.swift in Sources */,
 				DD484B711BD602F600CC9317 /* SetupViewSpotVC.swift in Sources */,
 				DD484BB61BD74E3200CC9317 /* ImageFileController.swift in Sources */,
 				DD484B561BD6026200CC9317 /* TWPhotoPickerController.m in Sources */,

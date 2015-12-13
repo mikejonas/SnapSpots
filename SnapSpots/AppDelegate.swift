@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var coreLocationController:CoreLocationController?
     var imageFileController:ImageFileController?
+    var returnSpotsUtil:ReturnSpotsUtil?
     
     override init() {
         super.init()
@@ -29,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         self.coreLocationController = CoreLocationController()
         self.imageFileController = ImageFileController()
+        self.returnSpotsUtil = ReturnSpotsUtil()
         
         // GOOGLE MAPS SDK
         GMSServices.provideAPIKey("AIzaSyB-0-hv2zKDeYl17vRTaDOPKhuQiZnsXmo")

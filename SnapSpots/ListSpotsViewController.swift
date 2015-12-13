@@ -9,12 +9,9 @@
 import UIKit
 import Firebase
 
-var spots:[SpotComponents] = []
-
 class ListSpotsViewController: UIViewController {
 
     var ref: Firebase!
-    var refPaths:[String] = []
     
     var pageMenu : CAPSPageMenu?
     let listSpotsCollectionVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("ListSpotsCollectionViewController") as! ListSpotsCollectionViewController
@@ -23,56 +20,17 @@ class ListSpotsViewController: UIViewController {
     
     var buttonImage = UIImage(named: "Nav Hashtag")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
     
+    var returnSpotsUtil = Globals.constants.appDelegate.returnSpotsUtil
+
+    
 
 
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
         self.listSpotsCollectionVC.collectionView!.reloadData()
 
-        if let userid = ref.authData {
-            //Get listing of users groups
-            let usersGroupsPath = "users_groups/\(userid.uid)"
-            
-            if !self.refPaths.contains(usersGroupsPath) {
-                self.refPaths.append(usersGroupsPath)
-                ref.childByAppendingPath(usersGroupsPath).observeSingleEventOfType(.ChildAdded, withBlock: { snapshot in
-
-                    //For each group, get list of spots
-                    let groupKey = snapshot.key
-                    let groupsSpotsPath = "groups_spots/\(groupKey)"
-                    if !self.refPaths.contains(groupsSpotsPath) {
-                        self.refPaths.append(groupsSpotsPath)
-                        self.ref.childByAppendingPath(groupsSpotsPath).observeEventType(.ChildAdded, withBlock: { snapshot in
-                            
-                            //For each spot in group, get the spot details
-                            print("SNAPSHOT KEY:    spots/\(snapshot.key)")
-                            self.ref.childByAppendingPath("spots/\(snapshot.key)").observeSingleEventOfType(.Value, withBlock: { snapshot in
-                                
-                                //for each spot, append to array and then reload data
-                                print("KEY:: \(snapshot.key)")
-                                print("REF:: \(snapshot.ref)")
-                                
-                                spots.insert(convertFirebaseObjectToSpotComponents(snapshot), atIndex: 0)
-                                self.listSpotsCollectionVC.collectionView!.reloadData()
-                            })
-
-                        })
-                    }
-                    
-    //                groupsSpotsRef.queryOrderedByChild("date").observeEventType(.ChildRemoved, withBlock: { snapshot in
-    //                    if let i = spots.indexOf({$0.key == snapshot.key}) {
-    //                        spots.removeAtIndex(i)
-    //                    }
-    //                    self.listSpotsCollectionVC.collectionView!.reloadData()
-    //                })
-    //                
-                    
-                })
-            }
-        }
-
-        
         
 //        ref.observeEventType(.Value, withBlock: { snapshot in
 //            print(snapshot.value)
@@ -83,7 +41,8 @@ class ListSpotsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.returnSpotsUtil?.delegate = self
+
         //Firebase
         ref = Firebase(url:"https://snapspot.firebaseio.com")
         
@@ -149,12 +108,6 @@ class ListSpotsViewController: UIViewController {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        for refPath in refPaths {
-            print(refPath)
-//            ref.childByAppendingPath(refPath).removeAllObservers()
-        }
-//        refPaths = []
-//        spots = []
     }
 
     override func didReceiveMemoryWarning() {
@@ -196,5 +149,12 @@ extension ListSpotsViewController: CAPSPageMenuDelegate {
         if index == 2 {
             print("2")
         }
+    }
+}
+
+extension ListSpotsViewController: ReturnSpotsUtilDelegate {
+    func updateSpots() {
+        self.listSpotsCollectionVC.collectionView!.reloadData()
+        print("UPDATED!")
     }
 }

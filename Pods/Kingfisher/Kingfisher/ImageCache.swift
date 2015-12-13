@@ -24,7 +24,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import Foundation
+import UIKit
 
 /**
 This notification will be sent when the disk cache got cleaned either there are cached files expired or the total size exceeding the max allowed size. The manually invoking of `clearDiskCache` method will not trigger this notification.
@@ -79,8 +79,10 @@ public class ImageCache {
     
     //Disk
     private let ioQueue: dispatch_queue_t
-    private let diskCachePath: String
     private var fileManager: NSFileManager!
+    
+    ///The disk cache location.
+    public let diskCachePath: String
     
     /// The longest time duration of the cache being stored in disk. Default is 1 week.
     public var maxCachePeriodInSecond = defaultMaxCachePeriodInSecond
@@ -98,11 +100,13 @@ public class ImageCache {
     /**
     Init method. Passing a name for the cache. It represents a cache folder in the memory and disk.
     
-    - parameter name: Name of the cache. It will be used as the memory cache name and the disk cache folder name. This value should not be an empty string.
+    - parameter name: Name of the cache. It will be used as the memory cache name and the disk cache folder name appending to the cache path. This value should not be an empty string.
+    - parameter path: Optional - Location of cache path on disk. If `nil` is passed (the default value), 
+                      the cache folder in of your app will be used. If you want to cache some user generating images, you could pass the Documentation path here.
     
     - returns: The cache object.
     */
-    public init(name: String) {
+    public init(name: String, path: String? = nil) {
         
         if name.isEmpty {
             fatalError("[Kingfisher] You should specify a name for the cache. A cache with empty name is not permitted.")
@@ -111,8 +115,8 @@ public class ImageCache {
         let cacheName = cacheReverseDNS + name
         memoryCache.name = cacheName
         
-        let paths = NSSearchPathForDirectoriesInDomains(.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true)
-        diskCachePath = (paths.first! as NSString).stringByAppendingPathComponent(cacheName)
+        let dstPath = path ?? NSSearchPathForDirectoriesInDomains(.CachesDirectory, NSSearchPathDomainMask.UserDomainMask, true).first!
+        diskCachePath = (dstPath as NSString).stringByAppendingPathComponent(cacheName)
         
         ioQueue = dispatch_queue_create(ioQueueName + name, DISPATCH_QUEUE_SERIAL)
         processQueue = dispatch_queue_create(processQueueName + name, DISPATCH_QUEUE_CONCURRENT)
@@ -138,14 +142,15 @@ public extension ImageCache {
     It is an async operation, if you need to do something about the stored image, use `-storeImage:forKey:toDisk:completionHandler:` 
     instead.
     
-    - parameter image: The image will be stored.
+    - parameter image:        The image will be stored.
     - parameter originalData: The original data of the image.
-                Kingfisher will use it to check the format of the image and optimize cache size on disk.
-                If `nil` is supplied, the image data will be saved as a normalized PNG file.
-    - parameter key:   Key for the image.
+                              Kingfisher will use it to check the format of the image and optimize cache size on disk.
+                              If `nil` is supplied, the image data will be saved as a normalized PNG file.
+                              It is strongly suggested to supply it whenever possible, to get a better performance and disk usage.
+    - parameter key:          Key for the image.
     */
     public func storeImage(image: UIImage, originalData: NSData? = nil, forKey key: String) {
-        storeImage(image, originalData: originalData,forKey: key, toDisk: true, completionHandler: nil)
+        storeImage(image, originalData: originalData, forKey: key, toDisk: true, completionHandler: nil)
     }
     
     /**
@@ -154,7 +159,8 @@ public extension ImageCache {
     - parameter image:             The image will be stored.
     - parameter originalData:      The original data of the image.
                                    Kingfisher will use it to check the format of the image and optimize cache size on disk.
-                                   If `nil` is supplied, the image data will be saved as a normalized PNG file.
+                                   If `nil` is supplied, the image data will be saved as a normalized PNG file. 
+                                   It is strongly suggested to supply it whenever possible, to get a better performance and disk usage.
     - parameter key:               Key for the image.
     - parameter toDisk:            Whether this image should be cached to disk or not. If false, the image will be only cached in memory.
     - parameter completionHandler: Called when stroe operation completes.
@@ -184,7 +190,7 @@ public extension ImageCache {
                 case .PNG: data = UIImagePNGRepresentation(image)
                 case .JPEG: data = UIImageJPEGRepresentation(image, 1.0)
                 case .GIF: data = UIImageGIFRepresentation(image)
-                case .Unknown: data = originalData
+                case .Unknown: data = originalData ?? UIImagePNGRepresentation(image.kf_normalizedImage())
                 }
                 
                 if let data = data {
@@ -399,104 +405,100 @@ extension ImageCache {
         // Do things in cocurrent io queue
         dispatch_async(ioQueue, { () -> Void in
             let diskCacheURL = NSURL(fileURLWithPath: self.diskCachePath)
-                
-                let resourceKeys = [NSURLIsDirectoryKey, NSURLContentModificationDateKey, NSURLTotalFileAllocatedSizeKey]
-                let expiredDate = NSDate(timeIntervalSinceNow: -self.maxCachePeriodInSecond)
-                var cachedFiles = [NSURL: [NSObject: AnyObject]]()
-                var URLsToDelete = [NSURL]()
-                
-                var diskCacheSize: UInt = 0
-                
-                if let fileEnumerator = self.fileManager.enumeratorAtURL(diskCacheURL,
-                    includingPropertiesForKeys: resourceKeys,
-                    options: NSDirectoryEnumerationOptions.SkipsHiddenFiles,
-                    errorHandler: nil) {
-                        
-                    for fileURL in fileEnumerator.allObjects as! [NSURL] {
+            let resourceKeys = [NSURLIsDirectoryKey, NSURLContentModificationDateKey, NSURLTotalFileAllocatedSizeKey]
+            let expiredDate = NSDate(timeIntervalSinceNow: -self.maxCachePeriodInSecond)
+            var cachedFiles = [NSURL: [NSObject: AnyObject]]()
+            var URLsToDelete = [NSURL]()
+            
+            var diskCacheSize: UInt = 0
+            
+            if let fileEnumerator = self.fileManager.enumeratorAtURL(diskCacheURL, includingPropertiesForKeys: resourceKeys, options: NSDirectoryEnumerationOptions.SkipsHiddenFiles, errorHandler: nil),
+                             urls = fileEnumerator.allObjects as? [NSURL] {
+                for fileURL in urls {
                             
-                        do {
-                            let resourceValues = try fileURL.resourceValuesForKeys(resourceKeys)
-                            // If it is a Directory. Continue to next file URL.
-                            if let isDirectory = resourceValues[NSURLIsDirectoryKey] as? NSNumber {
-                                if isDirectory.boolValue {
-                                    continue
-                                }
+                    do {
+                        let resourceValues = try fileURL.resourceValuesForKeys(resourceKeys)
+                        // If it is a Directory. Continue to next file URL.
+                        if let isDirectory = resourceValues[NSURLIsDirectoryKey] as? NSNumber {
+                            if isDirectory.boolValue {
+                                continue
                             }
+                        }
                             
-                            // If this file is expired, add it to URLsToDelete
-                            if let modificationDate = resourceValues[NSURLContentModificationDateKey] as? NSDate {
-                                if modificationDate.laterDate(expiredDate) == expiredDate {
-                                    URLsToDelete.append(fileURL)
-                                    continue
-                                }
+                        // If this file is expired, add it to URLsToDelete
+                        if let modificationDate = resourceValues[NSURLContentModificationDateKey] as? NSDate {
+                            if modificationDate.laterDate(expiredDate) == expiredDate {
+                                URLsToDelete.append(fileURL)
+                                continue
                             }
-                            
-                            if let fileSize = resourceValues[NSURLTotalFileAllocatedSizeKey] as? NSNumber {
-                                diskCacheSize += fileSize.unsignedLongValue
-                                cachedFiles[fileURL] = resourceValues
-                            }
-                        } catch _ {
                         }
                         
-                    }
-                }
-                
-                for fileURL in URLsToDelete {
-                    do {
-                        try self.fileManager.removeItemAtURL(fileURL)
+                        if let fileSize = resourceValues[NSURLTotalFileAllocatedSizeKey] as? NSNumber {
+                            diskCacheSize += fileSize.unsignedLongValue
+                            cachedFiles[fileURL] = resourceValues
+                        }
                     } catch _ {
                     }
+                        
                 }
+            }
                 
-                if self.maxDiskCacheSize > 0 && diskCacheSize > self.maxDiskCacheSize {
-                    let targetSize = self.maxDiskCacheSize / 2
+            for fileURL in URLsToDelete {
+                do {
+                    try self.fileManager.removeItemAtURL(fileURL)
+                } catch _ {
+                }
+            }
+                
+            if self.maxDiskCacheSize > 0 && diskCacheSize > self.maxDiskCacheSize {
+                let targetSize = self.maxDiskCacheSize / 2
                     
-                    // Sort files by last modify date. We want to clean from the oldest files.
-                    let sortedFiles = cachedFiles.keysSortedByValue({ (resourceValue1, resourceValue2) -> Bool in
-
-                        if let date1 = resourceValue1[NSURLContentModificationDateKey] as? NSDate {
-                            if let date2 = resourceValue2[NSURLContentModificationDateKey] as? NSDate {
-                                return date1.compare(date2) == .OrderedAscending
-                            }
+                // Sort files by last modify date. We want to clean from the oldest files.
+                let sortedFiles = cachedFiles.keysSortedByValue({ (resourceValue1, resourceValue2) -> Bool in
+                    
+                    if let date1 = resourceValue1[NSURLContentModificationDateKey] as? NSDate {
+                        if let date2 = resourceValue2[NSURLContentModificationDateKey] as? NSDate {
+                            return date1.compare(date2) == .OrderedAscending
                         }
-                        // Not valid date information. This should not happen. Just in case.
-                        return true
+                    }
+                    // Not valid date information. This should not happen. Just in case.
+                    return true
+                })
+                
+                for fileURL in sortedFiles {
+                    
+                    do {
+                        try self.fileManager.removeItemAtURL(fileURL)
+                    } catch {
+                        
+                    }
+                        
+                    URLsToDelete.append(fileURL)
+                    
+                    if let fileSize = cachedFiles[fileURL]?[NSURLTotalFileAllocatedSizeKey] as? NSNumber {
+                        diskCacheSize -= fileSize.unsignedLongValue
+                    }
+                    
+                    if diskCacheSize < targetSize {
+                        break
+                    }
+                }
+            }
+                
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                if URLsToDelete.count != 0 {
+                    let cleanedHashes = URLsToDelete.map({ (url) -> String in
+                        return url.lastPathComponent!
                     })
                     
-                    for fileURL in sortedFiles {
-                        
-                        do {
-                            try self.fileManager.removeItemAtURL(fileURL)
-                        } catch {
-                            
-                        }
-                        
-                        URLsToDelete.append(fileURL)
-                        
-                        if let fileSize = cachedFiles[fileURL]?[NSURLTotalFileAllocatedSizeKey] as? NSNumber {
-                            diskCacheSize -= fileSize.unsignedLongValue
-                        }
-                        
-                        if diskCacheSize < targetSize {
-                            break
-                        }
-                    }
+                    NSNotificationCenter.defaultCenter().postNotificationName(KingfisherDidCleanDiskCacheNotification, object: self, userInfo: [KingfisherDiskCacheCleanedHashKey: cleanedHashes])
                 }
                 
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
-                    if URLsToDelete.count != 0 {
-                        let cleanedHashes = URLsToDelete.map({ (url) -> String in
-                            return url.lastPathComponent!
-                        })
-                        
-                        NSNotificationCenter.defaultCenter().postNotificationName(KingfisherDidCleanDiskCacheNotification, object: self, userInfo: [KingfisherDiskCacheCleanedHashKey: cleanedHashes])
-                    }
-                    
-                    if let completionHandler = completionHandler {
-                        completionHandler()
-                    }
-                })
+                if let completionHandler = completionHandler {
+                    completionHandler()
+                }
+            })
         })
     }
     
@@ -582,13 +584,9 @@ public extension ImageCache {
             let resourceKeys = [NSURLIsDirectoryKey, NSURLTotalFileAllocatedSizeKey]
             var diskCacheSize: UInt = 0
             
-            if let fileEnumerator = self.fileManager.enumeratorAtURL(diskCacheURL,
-                includingPropertiesForKeys: resourceKeys,
-                options: NSDirectoryEnumerationOptions.SkipsHiddenFiles,
-                errorHandler: nil) {
-                    
-                    for fileURL in fileEnumerator.allObjects as! [NSURL] {
-                        
+            if let fileEnumerator = self.fileManager.enumeratorAtURL(diskCacheURL, includingPropertiesForKeys: resourceKeys, options: NSDirectoryEnumerationOptions.SkipsHiddenFiles, errorHandler: nil),
+                             urls = fileEnumerator.allObjects as? [NSURL] {
+                    for fileURL in urls {
                         do {
                             let resourceValues = try fileURL.resourceValuesForKeys(resourceKeys)
                             // If it is a Directory. Continue to next file URL.
@@ -649,7 +647,7 @@ extension UIImage {
 }
 
 extension Dictionary {
-    func keysSortedByValue(isOrderedBefore:(Value, Value) -> Bool) -> [Key] {
+    func keysSortedByValue(isOrderedBefore: (Value, Value) -> Bool) -> [Key] {
         var array = Array(self)
         array.sortInPlace {
             let (_, lv) = $0
@@ -662,4 +660,3 @@ extension Dictionary {
         }
     }
 }
-

@@ -15,9 +15,13 @@ class ListSpotsCollectionViewController: UICollectionViewController {
 
     var parentNavigationController : UINavigationController?
     var dateFormatter = NSDateFormatter()
+    var returnSpotsUtil = Globals.constants.appDelegate.returnSpotsUtil
+
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
+        print("LIST SPOTS COLLECTION VIEW WILL APPEAR")
+        print(returnSpotsUtil?.spots)
         self.collectionView!.reloadData()
     }
     
@@ -40,7 +44,7 @@ class ListSpotsCollectionViewController: UICollectionViewController {
             let cell = sender as! UICollectionViewCell
 
             let indexPath = self.collectionView!.indexPathForCell(cell)
-            if let key = spots[indexPath!.row].key {
+            if let key = returnSpotsUtil?.spots[indexPath!.row].key {
                 destinationVC.postKey = key
             }
         }
@@ -71,23 +75,21 @@ class ListSpotsCollectionViewController: UICollectionViewController {
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         //#warning Incomplete method implementation -- Return the number of items in the section
-        return spots.count
+        return (returnSpotsUtil?.spots.count)!
     }
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell:SpotCollectionCell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! SpotCollectionCell
-//        print(self.spots[indexPath.row])
-        
-        let city = spots[indexPath.row].addressComponents.locality
-        let city2 = spots[indexPath.row].addressComponents.subLocality
-        
+        let cell:SpotCollectionCell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! SpotCollectionCell        
+                returnSpotsUtil?.spots
+        let city = returnSpotsUtil?.spots[indexPath.row].addressComponents.locality
+        let city2 = returnSpotsUtil?.spots[indexPath.row].addressComponents.subLocality
         if city != nil {
             cell.locationLabel.text = city
         } else if city2 != nil {
             cell.locationLabel.text = city2
         }
-        if spots[indexPath.row].images.count > 0 {        
-            if let imagePath = spots[indexPath.row].images[0].path {
+        if returnSpotsUtil?.spots[indexPath.row].images.count > 0 {
+            if let imagePath = returnSpotsUtil?.spots[indexPath.row].images[0].path {
                 if let image = retrieveImageLocally(imagePath) {
                     cell.imageThumbnail.image = image
                 } else {
@@ -96,24 +98,19 @@ class ListSpotsCollectionViewController: UICollectionViewController {
                         placeholderImage: nil,
                         optionsInfo: nil,
                         progressBlock: { (receivedSize, totalSize) -> () in
-//                            print("Download Progress: \(receivedSize)/\(totalSize)")
                         },
                         completionHandler: { (image, error, cacheType, imageURL) -> () in
-//                            print("error: \(error)")
-//                            print("cacheType \(cacheType)")
-//                            print("imageURL \(imageURL)")
                         }
                     )
                     
                 }
             } else {
-                //No Images found?
                 cell.imageThumbnail.image = nil
             }
         }
         
         
-        if let timeStamp = spots[indexPath.row].date {
+        if let timeStamp = returnSpotsUtil?.spots[indexPath.row].date {
             dateFormatter.dateFormat = "MMM dd"
             let monthDay = dateFormatter.stringFromDate(timeStamp).componentsSeparatedByString(" ")
             
@@ -169,3 +166,5 @@ class ListSpotsCollectionViewController: UICollectionViewController {
     */
 
 }
+
+

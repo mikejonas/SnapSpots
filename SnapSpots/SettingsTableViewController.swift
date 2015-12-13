@@ -12,7 +12,7 @@ import Firebase
 
 class SettingsTableViewController: UITableViewController {
     
-    let tableSections = [3, 1, 2, 2]
+    let tableSections = [1, 1, 2, 2]
     
     let signUpVc = UIStoryboard(name: "Settings", bundle: nil).instantiateViewControllerWithIdentifier("SignUpViewController") as! SignUpViewController
     let signInVc = UIStoryboard(name: "Settings", bundle: nil).instantiateViewControllerWithIdentifier("SignInViewController") as! SignInViewController
@@ -22,8 +22,6 @@ class SettingsTableViewController: UITableViewController {
     
     
     @IBOutlet weak var logInCell: UITableViewCell!
-    @IBOutlet weak var syncSwitch: UISwitch!
-    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -48,26 +46,7 @@ class SettingsTableViewController: UITableViewController {
     }
     
     
-    
-    
-    @IBAction func syncSwitchTapped(sender: UISwitch) {
-        if (syncSwitch.on /*&& PFUser.currentUser() == nil*/) {
-            //LOGGED OUT USERS CANNOT SYNC!
-            showSignUpAlert("You need a SnapSpot account in order to sync")
-        } else if (!syncSwitch.on /*&& PFUser.currentUser() == nil*/) {
-            //This should never occur
-            print("??? HMMMM")
-        } else if (syncSwitch.on /*&& PFUser.currentUser() != nil*/) {
-            //Set sync to true
-            Globals.constants.defaults.setBool(true, forKey: "isSyncSet")
-            self.refreshTable()
-        } else if (!syncSwitch.on /*&& PFUser.currentUser() != nil*/) {
-            //Set sync to false
-            Globals.constants.defaults.setBool(false, forKey: "isSyncSet")
-            self.refreshTable()
-        }
-    }
-    
+
     @IBAction func rightBarButtonItemTapped(sender: AnyObject) {
         pageController.goToNextVC()
     }
@@ -100,7 +79,6 @@ class SettingsTableViewController: UITableViewController {
         alertController.addAction(SignInAction)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
-            self.syncSwitch.setOn(false, animated: true)
             if let indexPaths = self.tableView.indexPathsForSelectedRows {
                 for indexPath in indexPaths {
                     self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -132,8 +110,8 @@ class SettingsTableViewController: UITableViewController {
         case 0:
             switch(indexPath.row) {
             case 0:
-                //LOGIN CELL
-                print("check current user")
+                showSignUpAlert("")
+
                 if ref.authData != nil {
                     //Do something else
                 } else {
@@ -142,7 +120,7 @@ class SettingsTableViewController: UITableViewController {
             default: break
             }
         default:
-            print("This should never be displayed!")
+            ref.unauth();
         }
     }
 

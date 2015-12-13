@@ -19,7 +19,6 @@ class ViewSpotViewController: UIViewController {
     var images: [ImageComponents] = []
     var superViewScreenShot:UIImage?
     var dateFormatter = NSDateFormatter()
-    var locationCoordinates:CLLocationCoordinate2D?
     var isScrolledTOMap:Bool = false
     
     
@@ -252,13 +251,13 @@ class ViewSpotViewController: UIViewController {
     }
     
     @IBAction func appleMapsButtonTapped(sender: ButtonIconRight) {
-        if let coordinates = locationCoordinates {
+        if let coordinates = spotComponents?.addressComponents.coordinates {
             UIApplication.sharedApplication().openURL(NSURL(string: "http://maps.apple.com/?q=\(coordinates.latitude),\(coordinates.longitude)&t=Hybrid")!)
         }
         
     }
     @IBAction func googleMapsButtonTapped(sender: ButtonIconRight) {
-        if let coordinates = locationCoordinates {
+        if let coordinates = spotComponents?.addressComponents.coordinates {
             if (UIApplication.sharedApplication().canOpenURL(NSURL(string:"comgooglemaps://")!)) {
                 UIApplication.sharedApplication().openURL(NSURL(string:
                     "comgooglemapsurl://maps.google.com/maps?q=\(coordinates.latitude),\(coordinates.longitude)&views=satellite,traffic&source=SourceApp&x-success=sourceapp://?resume=true")!)

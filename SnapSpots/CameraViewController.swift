@@ -53,6 +53,7 @@ extension CameraViewController: CameraViewDelegate {
             self.dismissViewControllerAnimated(false, completion: { () -> Void in
                 let navigationController = UINavigationController(rootViewController: editSpotVc)
                 self.presentViewController(navigationController, animated: false) { () -> Void in
+                    editSpotVc.resetView()
                     editSpotVc.showDeleteSpotButton(false)
                     editSpotVc.addImage(ImageTransformationUtil.scaleImageTo(newWidth: 1080, image: image))
                     editSpotVc.updateMapAndReverseGeocode(photoCoordiantes)
@@ -63,7 +64,9 @@ extension CameraViewController: CameraViewDelegate {
     func cameraViewShutterButtonTapped(image: UIImage?) {
         let navigationController = UINavigationController(rootViewController: editSpotVc)
         self.presentViewController(navigationController, animated: false) { () -> Void in
+            editSpotVc.resetView()
             editSpotVc.refreshLocation(15)
+            editSpotVc.showDeleteSpotButton(false)
             if let image = image {
                 editSpotVc.addImage(ImageTransformationUtil.scaleImageTo(newWidth: 1080, image: image))
             }

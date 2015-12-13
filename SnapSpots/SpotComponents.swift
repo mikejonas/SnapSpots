@@ -44,8 +44,8 @@ struct SpotAddressComponents: CustomStringConvertible {
 }
 
 struct SpotGroupComponents {
-    var groupName:String!
-    var groupID:String!
+    var groupId:String?
+    var groupName:String?
 }
 
 private let documentsPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
@@ -55,6 +55,7 @@ private let imageFileController = Globals.constants.appDelegate.imageFileControl
 func convertFirebaseObjectToSpotComponents(spotObject:FDataSnapshot) -> SpotComponents {
     
     let json = JSON(spotObject.value)
+
     let spotAddressComponents = SpotAddressComponents(
         coordinates: getCoordinatesFromlatlng(json["location"]["coordinates"]["lat"].double, lng: json["location"]["coordinates"]["lng"].double),
         locality: json["location"]["locality"].string,
@@ -79,7 +80,7 @@ func convertFirebaseObjectToSpotComponents(spotObject:FDataSnapshot) -> SpotComp
     return spotComponents
 }
 
-func saveNewSpot(components: SpotComponents, group: SpotGroupComponents) {
+func saveNewSpot(components: SpotComponents, groupId: String) {
 
     let ref = Firebase(url: "https://snapspot.firebaseio.com")
     let spot = convertSpotComponentsIntoDictionary(components)
@@ -87,12 +88,17 @@ func saveNewSpot(components: SpotComponents, group: SpotGroupComponents) {
     let newSpotRef = ref.childByAppendingPath("spots").childByAutoId()
     let newSpotKey = newSpotRef.key
     
-    let updatedData = [
+    var updatedData:[String:AnyObject] = [
         "spots/\(newSpotKey)" : spot,
-        "groups_spots/\(group.groupID)/\(newSpotKey)" : true
+        "groups_spots/\(groupId)/\(newSpotKey)" : true
     ]
+    if let hashtags = components.hashTags {
+        for hashtag in hashtags {
+            updatedData["groups_hashtags/\(groupId)/\(hashtag)/\(newSpotKey)"] = true
+        }
+    }
     
-    ref.updateChildValues(updatedData as [NSObject : AnyObject]) { (error, ref) -> Void in
+    ref.updateChildValues(updatedData) { (error, ref) -> Void in
         
     }
     
@@ -117,6 +123,7 @@ func convertSpotComponentsIntoDictionary(components: SpotComponents) -> [String 
     var spotLocation = [String:AnyObject]()
     
     spot["caption"] = components.caption
+    
     spot["hashTags"] = components.hashTags
     
     getImagePathsAndSave(components.images) { (imagePaths) -> () in

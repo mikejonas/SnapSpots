@@ -3,10 +3,10 @@ PODS:
   - AmazonS3RequestManager (0.9.1):
     - Alamofire (~> 3.0)
     - SWXMLHash (~> 2.0)
-  - Firebase (2.4.2)
+  - Firebase (2.4.3)
   - FontAwesome.swift (0.6.2)
-  - GoogleMaps (1.10.4)
-  - Kingfisher (1.7.0)
+  - GoogleMaps (1.10.5)
+  - Kingfisher (1.8.2)
   - SwiftyJSON (2.3.1)
   - SWXMLHash (2.0.2)
 
@@ -25,16 +25,16 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   SwiftyJSON:
-    :commit: 5f5d00dbdcd256600a250765d9f674964080ceee
+    :commit: 10f67900bdf2fb0faba3371249a6fefdcaa880c5
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 SPEC CHECKSUMS:
   Alamofire: b61782387f81bcc538a0284cf2bb5d7995cd0a80
   AmazonS3RequestManager: c17ed840dfee8412c22f501516769a2010e39ac6
-  Firebase: 5e898ed5012c81d28ca5fae1113c6b61a172bc6d
+  Firebase: 48179995b561e2262c5d4060ecdffca45fbbff8b
   FontAwesome.swift: d40ac0a660f079c77945bab632ca20bf46ddc1ac
-  GoogleMaps: 134bcf57e8d489efbc0c29d532ed421554fabdb2
-  Kingfisher: 906bf9821bd32d06d4aaecc60431857e70ccabaa
+  GoogleMaps: da51c62c338c2d9c47cdad470a0d1e0e4b8544e4
+  Kingfisher: b39315e9dbed7e8ffe73a9ca1be2ee006d1d57e4
   SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
   SWXMLHash: 9e6bd7db2e8275eaf3d2082265623d6e749e169d
 

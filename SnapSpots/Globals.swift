@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import Firebase
 
 struct Globals {
     struct variables {
-        static var syncing:Bool = false
         static var filterSpotsHashtag:[String] = []
+        static var hashtags:[String] = []
     }
     
     struct constants {
